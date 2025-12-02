@@ -13,10 +13,9 @@ void main() {
           Utils.readToString('../test_inputs/Day01-$file.txt'),
         );
       });
-      if (p1 != null)
-        test("1", () {
-          expect(solvePart1(input), p1.toString());
-        });
+      test("1", () {
+        expect(solvePart1(input), p1.toString());
+      });
       if (p2 != null)
         test("2", () {
           expect(solvePart2(input), p2.toString());
@@ -26,11 +25,11 @@ void main() {
   group("Check actual input passes for part", () {
     late var input;
     setUp(() {
-      input = parseInput(Utils.readToString('../input.txt'));
+      input = parseInput(Utils.readToString('../inputs/Day01.txt'));
     });
     test("1", () {
-      expect(solvePart1(input), "");
-    }, skip: true);
+      expect(solvePart1(input), "995");
+    });
     test("2", () {
       expect(solvePart2(input), "");
     }, skip: true);
