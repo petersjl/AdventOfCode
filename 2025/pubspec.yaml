@@ -1,0 +1,8 @@
+name: AOC2025
+publish_to: none
+environment:
+  sdk: ^3.10.0
+resolution: workspace
+dependencies:
+  utils:
+    path: ../utils

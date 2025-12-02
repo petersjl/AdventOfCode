@@ -1,0 +1,33 @@
+**/inputs/*
+input.txt
+
+# --- Dart / pub build artifacts ---
+.dart_tool/
+.packages
+package_config.json
+pubspec.lock
+/.dart_tool
+/.pub/
+/.pub-cache/
+
+# build outputs
+build/
+coverage/
+
+# --- IDEs & editor ---
+.idea/
+.vscode/
+*.iml
+
+# macOS, Windows
+.DS_Store
+Thumbs.db
+
+# Editor temporary / swap files
+*~
+*.swp
+*.swo
+*.tmp
+
+# Logs
+*.log
