@@ -69,5 +69,39 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  var invalidSum = 0;
+  for (var (start, end) in input) {
+    for (var check = start; check <= end; check++) {
+      if (checkNumForRepeats(check) != 0) {
+        invalidSum += check;
+      }
+    }
+  }
+  return invalidSum.toString();
+}
+
+int checkNumForRepeats(int number) {
+  var digits = getDigitCount(number);
+  for (int group = 1; group <= digits ~/ 2; group++) {
+    if (matchesForGroup(number, group)) {
+      return group;
+    }
+  }
+  return 0;
+}
+
+bool matchesForGroup(int number, int group) {
+  int factor = pow(10, group).toInt();
+  var lower = number % factor;
+  if (getDigitCount(lower) != group) {
+    return false;
+  }
+  var upper = number ~/ factor;
+  while (upper > 0) {
+    if (upper % factor != lower) {
+      return false;
+    }
+    upper = (upper ~/ factor);
+  }
+  return true;
 }
