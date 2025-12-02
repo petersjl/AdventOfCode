@@ -59,5 +59,20 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  var count = 0;
+  var position = START_POS;
+  for (var rotation in input) {
+    var startsOnZero = position == 0;
+    position = rotation.clockwise
+        ? position + rotation.distance
+        : position - rotation.distance;
+    count += (position ~/ DIAL_SIZE).abs();
+    if (position.remainder(DIAL_SIZE) < 0 && !startsOnZero) count += 1;
+    if (position < 0 && position.remainder(DIAL_SIZE) == 0 && !startsOnZero)
+      count += 1;
+    if (position == 0) count += 1;
+    position %= DIAL_SIZE;
+  }
+
+  return count.toString();
 }
