@@ -68,5 +68,38 @@ int getBigRight(List<int> numbers, Pair<int, int> leftBig) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  var joltage = 0;
+  for (var row in input) {
+    joltage += getPackJoltage(row);
+  }
+  return joltage.toString();
 }
+
+const int NUM_BATTERIES = 12;
+int getPackJoltage(List<int> pack) {
+  List<int> digits = [];
+  var largest = Pair(-1, -1);
+  for (int remBatteries = NUM_BATTERIES; remBatteries >= 1; remBatteries--) {
+    largest = getBiggestFromStart(pack, largest.first + 1, remBatteries);
+    digits.add(largest.second);
+    if (remBatteries > 0 && largest.first + remBatteries == pack.length) {
+      digits.addAll(pack.sublist(largest.first + 1));
+      break;
+    }
+  }
+  var joltage = int.parse(digits.map((e) => e.toString()).join());
+  return joltage;
+}
+
+Pair<int, int> getBiggestFromStart(List<int> numbers, int start, int fromEnd) {
+  var largest = new Pair(start, numbers[start]);
+  for (int i = start; i <= numbers.length - fromEnd; i++) {
+    if (numbers[i] > largest.second) {
+      largest = new Pair(i, numbers[i]);
+    }
+    if (largest.second == 9) break;
+  }
+  return largest;
+}
+
+var thing = 987654321111111;
