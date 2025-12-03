@@ -11,7 +11,7 @@ void main(List<String> args) async {
 
   final directory = Directory(dir);
   if (!directory.existsSync()) {
-    print('Directory $dir does not exist.');
+    print('Directory "$dir" does not exist.');
     exit(1);
   }
 
@@ -23,7 +23,7 @@ void main(List<String> args) async {
   final testTemplate = 'utils/bin/templates/test.dart';
 
   if (File(binPath).existsSync()) {
-    print('File $binPath already exists.');
+    print('File "$binPath" already exists.');
     exit(0);
   }
 
