@@ -8,8 +8,10 @@ class Utils {
   static String timingString(Duration dur) {
     if (dur.inSeconds != 0)
       return '${dur.inSeconds}.${dur.inMilliseconds.toString().padLeft(3, '0')}s';
-    else if (dur.inMilliseconds != 0)
+    else if (dur.inMilliseconds > 10)
       return '${dur.inMilliseconds}ms';
+    else if (dur.inMilliseconds != 0)
+      return '${dur.inMilliseconds}.${dur.inMicroseconds.toString().padLeft(3, '0')}ms';
     else
       return '${dur.inMicroseconds}µs';
   }
@@ -43,9 +45,14 @@ class Utils {
   }
 
   static List<List<String>> getPointMap(
-      Iterable<Point> points, int mapHeight, int mapWidth) {
-    List<List<String>> map =
-        List.generate(mapHeight, (i) => List.generate(mapWidth, (j) => "."));
+    Iterable<Point> points,
+    int mapHeight,
+    int mapWidth,
+  ) {
+    List<List<String>> map = List.generate(
+      mapHeight,
+      (i) => List.generate(mapWidth, (j) => "."),
+    );
     for (var point in points) {
       map[point.y][point.x] = "#";
     }
@@ -174,9 +181,7 @@ class Point {
 
   int x, y;
   Point(this.x, this.y);
-  Point.clone(Point other)
-      : x = other.x,
-        y = other.y;
+  Point.clone(Point other) : x = other.x, y = other.y;
 
   @override
   // https://en.wikipedia.org/wiki/Pairing_function#Cantor_pairing_function
@@ -265,8 +270,8 @@ class PriorityQueue<T> {
   bool get isEmpty => _size == 0;
 
   PriorityQueue(int comparator(T queueItem, T toInsert))
-      : _comparator = comparator,
-        _array = [];
+    : _comparator = comparator,
+      _array = [];
 
   void enqueue(T object) {
     for (int i = 0; i < _array.length; ++i) {
@@ -498,15 +503,21 @@ class GrowableGrid<T> {
   int get yLength => _grid.length;
   int get size => xLength * yLength;
 
-  GrowableGrid(this._defaultValue,
-      [int lowX = 0, int highX = 0, int lowY = 0, int highY = 0])
-      : _grid = [],
-        _xOffset = lowX,
-        _yOffset = lowY {
+  GrowableGrid(
+    this._defaultValue, [
+    int lowX = 0,
+    int highX = 0,
+    int lowY = 0,
+    int highY = 0,
+  ]) : _grid = [],
+       _xOffset = lowX,
+       _yOffset = lowY {
     if (lowX > highX || lowY > highY)
       throw RangeError('Lows cannot be larger than highs');
-    _grid = List.generate(highY - lowY + 1,
-        (index) => List.generate(highX - lowX + 1, ((index) => _defaultValue)));
+    _grid = List.generate(
+      highY - lowY + 1,
+      (index) => List.generate(highX - lowX + 1, ((index) => _defaultValue)),
+    );
   }
 
   T get(int x, int y) {
@@ -550,8 +561,10 @@ class GrowableGrid<T> {
 
   void _growY(int amount, bool toPositive) {
     for (int i = 0; i < amount; ++i) {
-      _grid.insert(toPositive ? _grid.length : 0,
-          List.generate(_grid[0].length, (index) => _defaultValue));
+      _grid.insert(
+        toPositive ? _grid.length : 0,
+        List.generate(_grid[0].length, (index) => _defaultValue),
+      );
     }
   }
 }
@@ -564,8 +577,8 @@ class GrowableList<T> {
   int get length => _list.length;
 
   GrowableList(this._defaultValue, [int low = 0, int high = 0])
-      : _list = [],
-        _offset = low {
+    : _list = [],
+      _offset = low {
     if (low > high) throw RangeError('Low cannot be greater than high');
     _list = List.generate(high - low + 1, (index) => _defaultValue);
   }
