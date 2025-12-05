@@ -56,5 +56,25 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  var grid = Utils.cloneGrid(input);
+  var lastMoveable = -1;
+  var moveable = 0;
+  while (moveable != lastMoveable) {
+    lastMoveable = moveable;
+    for (int y = 0; y < grid.length; y++) {
+      for (int x = 0; x < grid[y].length; x++) {
+        if (grid[y][x] == 0) continue;
+        var surrounding = checkSurroundingPoints(
+          grid,
+          Point(x, y),
+          (val) => val > 0,
+        );
+        if (surrounding.length < 4) {
+          grid[y][x] = 0;
+          moveable++;
+        }
+      }
+    }
+  }
+  return moveable.toString();
 }

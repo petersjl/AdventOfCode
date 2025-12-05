@@ -71,6 +71,14 @@ class Utils {
         clone[row][col] = orig[row][col];
     return clone;
   }
+
+  static void gridMap<T>(List<List<T>> grid, T fun(T)) {
+    for (int y = 0; y < grid.length; y++) {
+      for (int x = 0; x < grid[y].length; x++) {
+        grid[y][x] = fun(grid[y][x]);
+      }
+    }
+  }
 }
 
 // Extensions
