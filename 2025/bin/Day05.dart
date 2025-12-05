@@ -64,5 +64,36 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  var (ranges, _) = input;
+
+  var mergedRanges = mergeRanges(ranges);
+  var validIdCount = 0;
+  for (var range in mergedRanges) {
+    validIdCount += (range.second - range.first + 1);
+  }
+  return validIdCount.toString();
+}
+
+List<Pair<int, int>> mergeRanges(List<Pair<int, int>> ranges) {
+  if (ranges.isEmpty) return [];
+
+  ranges.sort((a, b) => a.first.compareTo(b.first));
+  var merged = <Pair<int, int>>[];
+  var current = ranges[0];
+
+  for (int i = 1; i < ranges.length; i++) {
+    var next = ranges[i];
+    if (current.second >= next.first) {
+      current = new Pair(
+        current.first,
+        current.second > next.second ? current.second : next.second,
+      );
+    } else {
+      merged.add(current);
+      current = next;
+    }
+  }
+  merged.add(current);
+
+  return merged;
 }
