@@ -101,5 +101,3 @@ Pair<int, int> getBiggestFromStart(List<int> numbers, int start, int fromEnd) {
   }
   return largest;
 }
-
-var thing = 987654321111111;

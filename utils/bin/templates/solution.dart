@@ -33,9 +33,6 @@ InputType parseInput(String input) {
   return input.splitNewLine();
 }
 
-const int DIAL_SIZE = 100;
-const int START_POS = 50;
-
 String solvePart1(InputType input) {
   return "";
 }
