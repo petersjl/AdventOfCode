@@ -1,7 +1,8 @@
 // ignore_for_file: dead_code
 
-import 'package:utils/ComonFunctions.dart';
+// import 'package:utils/ComonFunctions.dart';
 import 'package:utils/DartUtils.dart';
+import 'package:utils/Grid.dart';
 
 void main() {
   bool runP1 = true;
@@ -33,53 +34,40 @@ void main() {
   print('Ran in ${Utils.timingString(timeP2)}');
 }
 
-typedef InputType = List<List<int>>;
+typedef InputType = Grid<int>;
 
 InputType parseInput(String input) {
-  return input
-      .splitNewLine()
-      .map((line) => line.split('').map((c) => c == '.' ? 0 : 1).toList())
-      .toList();
+  return Grid<int>.fromStringGrid(
+    input,
+    (line) => line.split(''),
+    (c) => c == '.' ? 0 : 1,
+  );
 }
 
 String solvePart1(InputType input) {
-  int moveable = 0;
-  for (int y = 0; y < input.length; y++) {
-    for (int x = 0; x < input[y].length; x++) {
-      if (input[y][x] == 0) continue;
-      var surrounding = checkSurroundingPoints(
-        input,
-        Point(x, y),
-        (val) => val == 1,
-      );
-      if (surrounding.length < 4) {
-        moveable++;
-      }
+  var moveable = input.count((cell, point) {
+    if (cell == 0) return false;
+    if (input.surroundingLessThan(point, 4, (val) => val > 0)) {
+      return true;
     }
-  }
+    return false;
+  });
   return moveable.toString();
 }
 
 String solvePart2(InputType input) {
-  var grid = Utils.cloneGrid(input);
   var lastMoveable = -1;
   var moveable = 0;
   while (moveable != lastMoveable) {
     lastMoveable = moveable;
-    for (int y = 0; y < grid.length; y++) {
-      for (int x = 0; x < grid[y].length; x++) {
-        if (grid[y][x] == 0) continue;
-        var surrounding = checkSurroundingPoints(
-          grid,
-          Point(x, y),
-          (val) => val > 0,
-        );
-        if (surrounding.length < 4) {
-          grid[y][x] = 0;
-          moveable++;
-        }
+    input.map((cell, point) {
+      if (cell == 0) return cell;
+      if (input.surroundingLessThan(point, 4, (val) => val > 0)) {
+        moveable++;
+        return 0;
       }
-    }
+      return cell;
+    });
   }
   return moveable.toString();
 }
