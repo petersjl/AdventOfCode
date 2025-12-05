@@ -48,15 +48,21 @@ String solvePart1(InputType input) {
   var (ranges, checks) = input;
   int count = 0;
   ranges.sort((a, b) => a.first.compareTo(b.first));
-  for (var check in checks) {
-    for (var range in ranges) {
-      if (check < range.first) {
-        break;
-      }
-      if (check >= range.first && check <= range.second) {
-        count += 1;
-        break;
-      }
+  ranges = mergeRanges(ranges);
+  checks.sort();
+  int currentRangeIndex = 0;
+  int currentCheckIndex = 0;
+  while (currentCheckIndex < checks.length &&
+      currentRangeIndex < ranges.length) {
+    var check = checks[currentCheckIndex];
+    var range = ranges[currentRangeIndex];
+    if (check < range.first) {
+      currentCheckIndex += 1;
+    } else if (check > range.second) {
+      currentRangeIndex += 1;
+    } else {
+      count += 1;
+      currentCheckIndex += 1;
     }
   }
 

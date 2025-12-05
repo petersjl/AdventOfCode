@@ -39,4 +39,18 @@ void main() {
       expect(solvePart2(input), part2Answer);
     }, skip: part2Answer.isEmpty);
   });
+
+  group('mergeRanges', () {
+    for (var (input, expected) in [
+      ([Pair(1, 5), Pair(3, 7)], [Pair(1, 7)]),
+      ([Pair(1, 5), Pair(2, 4)], [Pair(1, 5)]),
+      ([Pair(1, 5), Pair(5, 7)], [Pair(1, 7)]),
+      ([Pair(1, 5), Pair(6, 7)], [Pair(1, 5), Pair(6, 7)]),
+    ]) {
+      test('merges $input to $expected', () {
+        var result = mergeRanges(input);
+        expect(result, expected);
+      });
+    }
+  });
 }
