@@ -21,6 +21,9 @@ class Grid<T> {
       _grid.add(cols.map((c) => parseCell(c)).toList());
     }
   }
+  Grid.fromArrays(List<List<T>> arrays) {
+    _grid = arrays.map((row) => row.toList()).toList();
+  }
 
   int get height => _grid.length;
   int get width => _grid.isEmpty ? 0 : _grid[0].length;
@@ -74,26 +77,25 @@ class Grid<T> {
   }
 
   bool surroundingLessThan(Point p, int count, bool Function(T) condition) {
-    var found = 0;
-    for (var dx = -1; dx <= 1; dx++) {
-      for (var dy = -1; dy <= 1; dy++) {
-        if (dx == 0 && dy == 0) continue;
-        var newX = p.x + dx;
-        var newY = p.y + dy;
-        if (newX >= 0 &&
-            newX < _grid[0].length &&
-            newY >= 0 &&
-            newY < _grid.length &&
-            condition(_grid[newY][newX])) {
-          found++;
-          if (found >= count) return false;
-        }
-      }
-    }
-    return true;
+    if (count <= 0) return false;
+    return _surroundingWhereShort(
+      p,
+      condition,
+      (found) => found >= count,
+      false,
+    );
   }
 
   bool surroundingMoreThan(Point p, int count, bool Function(T) condition) {
+    return _surroundingWhereShort(p, condition, (found) => found > count, true);
+  }
+
+  bool _surroundingWhereShort(
+    Point p,
+    bool Function(T) condition, // What counts as found
+    bool Function(int) comparator, // Compare against the found count
+    bool earlyExit, // What to return when comparator is satisfied
+  ) {
     var found = 0;
     for (var dx = -1; dx <= 1; dx++) {
       for (var dy = -1; dy <= 1; dy++) {
@@ -106,10 +108,10 @@ class Grid<T> {
             newY < _grid.length &&
             condition(_grid[newY][newX])) {
           found++;
-          if (found > count) return true;
+          if (comparator(found)) return earlyExit;
         }
       }
     }
-    return false;
+    return !earlyExit;
   }
 }
