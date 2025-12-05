@@ -11,12 +11,17 @@ void main() {
   var rawInput = Utils.readToString("../inputs/Day04.txt");
 
   Stopwatch stopwatch = new Stopwatch()..start();
-  var input = parseInput(rawInput);
+  var inputP1 = parseInput(rawInput);
   var timeParse = stopwatch.elapsed;
+  // Parse again for part 2 to allow any mutations,
+  // but don't count that time
+  stopwatch.stop();
+  var inputP2 = parseInput(rawInput);
 
-  if (runP1) solutionP1 = solvePart1(input);
+  stopwatch.start();
+  if (runP1) solutionP1 = solvePart1(inputP1);
   var timeP1 = stopwatch.elapsed;
-  if (runP2) solutionP2 = solvePart2(input);
+  if (runP2) solutionP2 = solvePart2(inputP2);
   var timeP2 = stopwatch.elapsed;
   stopwatch.stop();
 
