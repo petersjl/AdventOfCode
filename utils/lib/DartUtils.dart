@@ -16,6 +16,38 @@ class Utils {
       return '${dur.inMicroseconds}µs';
   }
 
+  static void runWithTiming<T>(
+    T parser(String rawInput),
+    String part1Solver(T input)?,
+    String part2Solver(T input)?,
+    String rawInput,
+  ) {
+    Stopwatch stopwatch = new Stopwatch()..start();
+    var inputP1 = parser(rawInput);
+    var timeParse = stopwatch.elapsed;
+    // Parse again for part 2 to allow any mutations,
+    // but don't count that time
+    stopwatch.stop();
+    var inputP2 = parser(rawInput);
+
+    String solutionP1 = "", solutionP2 = "";
+    stopwatch.start();
+    if (part1Solver != null) solutionP1 = part1Solver(inputP1);
+    var timeP1 = stopwatch.elapsed;
+    if (part2Solver != null) solutionP2 = part2Solver(inputP2);
+    var timeP2 = stopwatch.elapsed;
+    stopwatch.stop();
+
+    print('Parse time: ${Utils.timingString(timeParse)}');
+    if (part1Solver != null)
+      print(
+        'Part 1 (${Utils.timingString(timeP1 - timeParse)}): ${solutionP1}',
+      );
+    if (part2Solver != null)
+      print('Part 2 (${Utils.timingString(timeP2 - timeP1)}): ${solutionP2}');
+    print('Ran in ${Utils.timingString(timeP2)}');
+  }
+
   static String to_abs_path(path, [base_dir = null]) {
     Path.Context context;
     if (Platform.isWindows) {
