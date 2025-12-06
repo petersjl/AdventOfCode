@@ -15,7 +15,7 @@ void main() {
   // Parse again for part 2 to allow any mutations,
   // but don't count that time
   stopwatch.stop();
-  var inputP2 = parseInput(rawInput);
+  var inputP2 = parseInputPart2(rawInput);
 
   stopwatch.start();
   if (runP1) solutionP1 = solvePart1(inputP1);
@@ -50,6 +50,30 @@ InputType parseInput(String input) {
   return (numberLines, operations);
 }
 
+InputType parseInputPart2(String input) {
+  var lines = input.splitNewLine();
+  var operations = lines.removeLast().splitWhitespace();
+  var numberLines = <List<int>>[];
+  var currentNums = <int>[];
+  for (int col = 0; col < lines[0].length; col++) {
+    var str = new StringBuffer();
+    for (int row = 0; row < lines.length; row++) {
+      str.write(lines[row][col]);
+    }
+    var result = str.toString().trim();
+    if (result.isEmpty) {
+      numberLines.add(currentNums);
+      currentNums = <int>[];
+    } else {
+      currentNums.add(int.parse(result));
+    }
+  }
+  if (currentNums.isNotEmpty) {
+    numberLines.add(currentNums);
+  }
+  return (numberLines, operations);
+}
+
 String solvePart1(InputType input) {
   var (numberLines, operations) = input;
   var total = 0;
@@ -71,5 +95,15 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  var (numberLines, operations) = input;
+  var total = 0;
+
+  for (int i = 0; i < numberLines.length; i++) {
+    var mult = operations[i] == '*';
+    total += numberLines[i].fold(
+      mult ? 1 : 0,
+      (mult ? (a, b) => a * b : (a, b) => a + b),
+    );
+  }
+  return total.toString();
 }
