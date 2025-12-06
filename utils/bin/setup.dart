@@ -31,11 +31,23 @@ void main(List<String> args) async {
   await File(solutionTemplate).copy(binPath);
   print('Created $binPath');
 
+  // Replace {day_num} in solution file
+  final binFile = File(binPath);
+  String binContent = await binFile.readAsString();
+  binContent = binContent.replaceAll('{day_num}', day);
+  await binFile.writeAsString(binContent);
+
   // Copy test template and add import
   final testContent = await File(testTemplate).readAsString();
   final importLine = "import '../bin/Day$day.dart' hide main;\n";
   await File(testPath).writeAsString(importLine + testContent);
   print('Created $testPath');
+
+  // Replace {day_num} in test file
+  final testFile = File(testPath);
+  String testFileContent = await testFile.readAsString();
+  testFileContent = testFileContent.replaceAll('{day_num}', day);
+  await testFile.writeAsString(testFileContent);
 
   // Create empty input files
   await File(inputPath).writeAsString('');

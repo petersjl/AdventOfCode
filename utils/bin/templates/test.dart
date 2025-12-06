@@ -3,7 +3,7 @@ import 'package:test/scaffolding.dart';
 
 import 'package:utils/DartUtils.dart';
 
-const String DAY = '';
+const String DAY = '{day_num}';
 void main() {
   if (DAY.isEmpty) {
     throw Exception("Please set the DAY constant to the day being tested.");
