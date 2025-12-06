@@ -11,16 +11,16 @@ void main() {
   }
   for (var (file, p1, p2) in [('A', "4277556", "3263827")])
     group("Check sample input $file passes for part", () {
-      late var inputString;
+      late var input;
       setUp(() {
-        inputString = Utils.readToString('../test_inputs/Day$DAY-$file.txt');
+        input = parseInput(
+          Utils.readToString('../test_inputs/Day$DAY-$file.txt'),
+        );
       });
       test("1", () {
-        var input = parseInput(inputString);
         expect(solvePart1(input), p1.toString());
       }, skip: p1.isEmpty);
       test("2", () {
-        var input = parseInputPart2(inputString);
         expect(solvePart2(input), p2.toString());
       }, skip: p2.isEmpty);
     });
@@ -34,27 +34,25 @@ void main() {
     }
   });
   group('Part 2 cases', () {
-    for (var (inputStr, expected) in [("123 \n 45 \n  6 \n*", "8544")]) {
+    for (var (inputStr, expected) in [("123 \\n 45 \\n  6 \\n*", "8544")]) {
       test('Input: $inputStr', () {
-        var input = parseInputPart2(inputStr);
+        var input = parseInput(inputStr.replaceAll('\\n', '\n'));
         expect(solvePart2(input), expected);
       });
     }
   });
 
   group("Check actual input passes for part", () {
-    late var inputString;
+    late var input;
     setUp(() {
-      inputString = Utils.readToString('../inputs/Day$DAY.txt');
+      input = parseInput(Utils.readToString('../inputs/Day$DAY.txt'));
     });
     const part1Answer = "5335495999141";
     const part2Answer = "10142723156431";
     test("1", () {
-      var input = parseInput(inputString);
       expect(solvePart1(input), part1Answer);
     }, skip: part1Answer.isEmpty);
     test("2", () {
-      var input = parseInputPart2(inputString);
       expect(solvePart2(input), part2Answer);
     }, skip: part2Answer.isEmpty);
   });

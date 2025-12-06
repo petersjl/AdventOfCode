@@ -15,7 +15,7 @@ void main() {
   // Parse again for part 2 to allow any mutations,
   // but don't count that time
   stopwatch.stop();
-  var inputP2 = parseInputPart2(rawInput);
+  var inputP2 = parseInput(rawInput);
 
   stopwatch.start();
   if (runP1) solutionP1 = solvePart1(inputP1);
@@ -32,33 +32,62 @@ void main() {
   print('Ran in ${Utils.timingString(timeP2)}');
 }
 
-typedef InputType = (List<List<int>> numberLines, List<String> operations);
+typedef InputType = (List<String> numberLines, List<String> operations);
 
 InputType parseInput(String input) {
   var lines = input.splitNewLine();
-  var numberLines = <List<int>>[];
-  var operations = <String>[];
-  for (var line in lines) {
-    var trimmed = line.trim();
-    if (['+', '*'].contains(trimmed[0])) {
-      operations = trimmed.splitWhitespace();
-    } else {
-      var strNums = trimmed.splitWhitespace();
-      numberLines.add(strNums.map(int.parse).toList());
-    }
-  }
-  return (numberLines, operations);
+  var operations = (lines.removeLast().trim()).splitWhitespace();
+  return (lines, operations);
 }
 
-InputType parseInputPart2(String input) {
-  var lines = input.splitNewLine();
-  var operations = lines.removeLast().splitWhitespace();
+String solvePart1(InputType input) {
+  var (numberLines, operations) = input;
+  var groups = parsePart1Groups(numberLines);
+
+  return mathGroups(groups, operations).toString();
+}
+
+List<List<int>> parsePart1Groups(List<String> input) {
+  var groups = <List<int>>[];
+  var parsedLines = input
+      .map((line) => (line.trim()).splitWhitespace().map(int.parse).toList())
+      .toList();
+  for (var i = 0; i < parsedLines[0].length; i++) {
+    var currentGroup = <int>[];
+    for (var line in parsedLines) {
+      currentGroup.add(line[i]);
+    }
+    groups.add(currentGroup);
+  }
+  return groups;
+}
+
+String solvePart2(InputType input) {
+  var (numberLines, operations) = input;
+  var groups = parsePart2Groups(numberLines);
+
+  return mathGroups(groups, operations).toString();
+}
+
+int mathGroups(List<List<int>> groups, List<String> operations) {
+  int total = 0;
+  for (int i = 0; i < operations.length; i++) {
+    var mult = operations[i] == '*';
+    total += groups[i].fold(
+      mult ? 1 : 0,
+      (mult ? (a, b) => a * b : (a, b) => a + b),
+    );
+  }
+  return total;
+}
+
+List<List<int>> parsePart2Groups(List<String> input) {
   var numberLines = <List<int>>[];
   var currentNums = <int>[];
-  for (int col = 0; col < lines[0].length; col++) {
+  for (int col = 0; col < input[0].length; col++) {
     var str = new StringBuffer();
-    for (int row = 0; row < lines.length; row++) {
-      str.write(lines[row][col]);
+    for (int row = 0; row < input.length; row++) {
+      str.write(input[row][col]);
     }
     var result = str.toString().trim();
     if (result.isEmpty) {
@@ -71,39 +100,6 @@ InputType parseInputPart2(String input) {
   if (currentNums.isNotEmpty) {
     numberLines.add(currentNums);
   }
-  return (numberLines, operations);
-}
-
-String solvePart1(InputType input) {
-  var (numberLines, operations) = input;
-  var total = 0;
-  //col
-  for (int i = 0; i < numberLines[0].length; i++) {
-    var local = numberLines[0][i];
-    var op = operations[i];
-    // row
-    for (int j = 1; j < numberLines.length; j++) {
-      if (op == '+') {
-        local += numberLines[j][i];
-      } else if (operations[i] == '*') {
-        local *= numberLines[j][i];
-      }
-    }
-    total += local;
-  }
-  return total.toString();
-}
-
-String solvePart2(InputType input) {
-  var (numberLines, operations) = input;
-  var total = 0;
-
-  for (int i = 0; i < numberLines.length; i++) {
-    var mult = operations[i] == '*';
-    total += numberLines[i].fold(
-      mult ? 1 : 0,
-      (mult ? (a, b) => a * b : (a, b) => a + b),
-    );
-  }
-  return total.toString();
+  input;
+  return numberLines;
 }
