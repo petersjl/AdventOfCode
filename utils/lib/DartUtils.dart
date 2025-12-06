@@ -88,7 +88,7 @@ extension StringExtras on String {
   }
 
   List<String> splitNewLine() {
-    return this.split('\r\n');
+    return this.split('${Platform.lineTerminator}');
   }
 
   List<String> splitDoubleNewLine() {
