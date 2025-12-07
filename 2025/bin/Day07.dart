@@ -46,5 +46,35 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  var (lines, start) = input;
+  var row = [start];
+  var rays = 0;
+  var seen = Map<Point, int>();
+  seen.increment(start);
+  while (!row.isEmpty) {
+    var downBuffer = Set<Point>();
+    for (var current in row) {
+      var value = seen[current]!;
+      if (lines[current.y][current.x] == '^') {
+        var left = current + Point.left;
+        var right = current + Point.right;
+        if (seen.increment(left, value) == value) downBuffer.add(left);
+        if (seen.increment(right, value) == value) downBuffer.add(right);
+      } else {
+        downBuffer.add(current);
+      }
+    }
+    // Clear row to build next row
+    row = <Point>[];
+    for (var point in downBuffer) {
+      var down = point + Point.down;
+      if (down.y < lines.length) {
+        seen.increment(down, seen[point]!);
+        row.add(down);
+      } else {
+        rays += seen[point]!;
+      }
+    }
+  }
+  return rays.toString();
 }
