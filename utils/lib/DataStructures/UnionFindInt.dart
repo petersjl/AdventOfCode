@@ -11,6 +11,15 @@ class UnionFindInt {
 
   int get numSets => _numSets;
   bool get isSingleSet => _numSets <= 1;
+  List<int> get roots {
+    List<int> rootsList = [];
+    for (int i = 0; i < parent.length; i++) {
+      if (parent[i] == i) {
+        rootsList.add(i);
+      }
+    }
+    return rootsList;
+  }
 
   int find(int x) {
     var r = x;
