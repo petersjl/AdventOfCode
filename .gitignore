@@ -1,6 +1,7 @@
 **/inputs/*
 **/tried/*
 input.txt
+.envrc
 
 # --- Dart / pub build artifacts ---
 .dart_tool/
