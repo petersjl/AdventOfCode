@@ -3,8 +3,7 @@
 import 'dart:math';
 
 import 'package:utils/DartUtils.dart';
-// Removed unused DataStructures export; using UnionFindInt directly
-import 'package:utils/DataStructures/UnionFindInt.dart';
+import 'package:utils/DataStructures.dart';
 
 void main() {
   var rawInput = Utils.readToString("../inputs/Day08.txt");
