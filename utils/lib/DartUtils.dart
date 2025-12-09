@@ -61,7 +61,14 @@ class Utils {
   }
 
   static String readToString(path, [base_dir = null]) {
-    return File(to_abs_path(path)).readAsStringSync();
+    var contents = File(to_abs_path(path)).readAsStringSync();
+    contents = contents.replaceAll('\r\n', '\n');
+    if (contents.isNotEmpty) {
+      if (contents.endsWith('\n')) {
+        contents = contents.substring(0, contents.length - 1);
+      }
+    }
+    return contents;
   }
 
   static String generateMd5(String input) {
@@ -120,11 +127,11 @@ extension StringExtras on String {
   }
 
   List<String> splitNewLine() {
-    return this.split('${Platform.lineTerminator}');
+    return this.split('\n');
   }
 
   List<String> splitDoubleNewLine() {
-    return this.split('${Platform.lineTerminator}${Platform.lineTerminator}');
+    return this.split('\n\n');
   }
 
   List<String> splitWhitespace() {
