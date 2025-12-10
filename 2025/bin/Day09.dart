@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:utils/DartUtils.dart';
+import 'package:utils/DataStructures/RightPolygon.dart';
 
 void main() {
   var rawInput = Utils.readToString("../inputs/Day09.txt");
@@ -36,5 +37,34 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  var polygon = RightPolygon(input);
+  var maxArea = 0;
+  for (int i = 0; i < input.length; i++) {
+    for (int j = i + 1; j < input.length; j++) {
+      final left = input[i];
+      final right = input[j];
+      final area = getArea(left, right);
+      if (area <= maxArea) {
+        continue;
+      }
+      final rect = RightPolygon([
+        left,
+        Point(left.x, right.y),
+        right,
+        Point(right.x, left.y),
+      ]);
+      if (polygon.contains(rect)) {
+        maxArea = area;
+      }
+    }
+  }
+  return maxArea.toString();
+}
+
+int getArea(Point left, Point right) {
+  final minX = min(left.x, right.x);
+  final maxX = max(left.x, right.x);
+  final minY = min(left.y, right.y);
+  final maxY = max(left.y, right.y);
+  return (maxX - minX + 1) * (maxY - minY + 1);
 }
