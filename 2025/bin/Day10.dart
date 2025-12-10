@@ -73,6 +73,38 @@ String solvePart2(InputType input) {
   return "";
 }
 
+int getMinJoltPresses(Machine machine) {
+  final q = Queue<(int, List<int>)>()
+    ..push((0, List.generate(machine.joltages.length, (i) => 0)));
+  while (!q.isEmpty) {
+    print('${q.length}');
+    var (presses, jolts) = q.pop();
+    for (final button in machine.buttons) {
+      final newJolts = getNewJoltages(button, jolts);
+      if (newJolts == machine.joltages) return presses + 1;
+      if (newJolts.indexed.whereFirst((val) {
+            return val.$2 > machine.joltages[val.$1];
+          }) !=
+          null) {
+        print('jolts too big');
+        continue;
+      }
+      q.push((presses + 1, newJolts));
+    }
+  }
+  throw Exception('Presses not found');
+}
+
+List<int> getNewJoltages(int button, List<int> jolts) {
+  final newJolts = List<int>.from(jolts);
+  var i = 0;
+  while (button >> i != 0) {
+    newJolts[i] += (button >> i & 1);
+    i++;
+  }
+  return newJolts;
+}
+
 class Machine {
   int expected;
   List<int> buttons;

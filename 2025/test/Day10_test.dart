@@ -29,6 +29,7 @@ void main() {
     );
     expect(machine.joltages, equals([3, 5, 4, 7]));
   });
+
   for (var (input, presses) in [
     ("[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}", 2),
   ])
@@ -36,6 +37,20 @@ void main() {
       final machine = parseInput(input)[0];
       expect(getMinPresses(machine), equals(presses));
     });
+
+  for (var (input, presses) in [
+    ("[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}", 10),
+  ])
+    test('$input => $presses', () {
+      final machine = parseInput(input)[0];
+      expect(getMinJoltPresses(machine), equals(presses));
+    });
+
+  test('getNewJoltages', () {
+    final button = int.parse('1000', radix: 2);
+    final jolts = [0, 0, 0, 0];
+    expect(getNewJoltages(button, jolts), equals([0, 0, 0, 1]));
+  });
 
   for (var (file, p1, p2) in [('A', "7", "")])
     group("Check sample input $file passes for part", () {
