@@ -1,6 +1,9 @@
 default:
     just --list
 
+setup year day:
+    dart run ./utils/bin/setup.dart {{year}} {{day}}
+
 runc year day:
     just compile {{year}} {{day}}
     ./{{year}}/exe/Day{{day}}.exe
