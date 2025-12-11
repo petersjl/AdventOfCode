@@ -9,7 +9,7 @@ void main() {
   if (DAY.isEmpty) {
     throw Exception("Please set the DAY constant to the day being tested.");
   }
-  for (var (file, p1, p2) in [('A', "5", "")])
+  for (var (file, p1, p2) in [('A', "5", ""), ('B', "", "2")])
     group("Check sample input $file passes for part", () {
       late var input;
       setUp(() {
