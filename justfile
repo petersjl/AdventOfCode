@@ -4,6 +4,9 @@ default:
 setup year day:
     dart run ./utils/bin/setup.dart {{year}} {{day}}
 
+fetch year day:
+    dart run ./utils/bin/fetch.dart {{year}} {{day}}
+
 runc year day:
     just compile {{year}} {{day}}
     ./{{year}}/exe/Day{{day}}.exe
