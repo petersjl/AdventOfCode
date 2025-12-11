@@ -1,5 +1,7 @@
 // ignore_for_file: dead_code
 
+import 'dart:collection';
+
 import 'package:utils/DartUtils.dart';
 
 void main() {
@@ -55,13 +57,14 @@ String solvePart1(InputType input) {
 int getMinPresses(Machine machine) {
   // state, presses
   final q = Queue<(int, int)>()..push((0, 0));
+  final seen = HashSet<int>()..add(0);
   while (!q.isEmpty) {
     final (state, presses) = q.pop();
     for (final button in machine.buttons) {
       var pressed = state ^ button;
       if (pressed == machine.expected) {
         return presses + 1;
-      } else {
+      } else if (seen.add(pressed)) {
         q.push((pressed, presses + 1));
       }
     }
