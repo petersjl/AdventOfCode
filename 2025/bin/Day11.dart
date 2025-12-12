@@ -19,23 +19,30 @@ InputType parseInput(String input) {
 }
 
 String solvePart1(InputType input) {
-  return countPaths('you', input, {}, {}).toString();
+  return countPaths('you', 'out', input, {}, {}).toString();
 }
 
 int countPaths(
   String currentMachine,
-  InputType map,
-  Set<String> seen,
-  Map<String, int> memo,
-) {
+  String target,
+  InputType map, [
+  Set<String>? seen,
+  Map<String, int>? memo,
+]) {
   var paths = 0;
+  seen = seen ?? {};
+  memo = memo ?? {};
+  if (map[currentMachine] == null) {
+    memo[currentMachine] = 0;
+    return 0;
+  }
   for (final nextMachine in map[currentMachine]!) {
-    if (nextMachine == 'out') {
+    if (nextMachine == target) {
       memo[currentMachine] = 1;
       return 1;
     }
     if (seen.add(nextMachine)) {
-      paths += countPaths(nextMachine, map, seen, memo);
+      paths += countPaths(nextMachine, target, map, seen, memo);
     } else {
       paths += memo[nextMachine] ?? 0;
     }
@@ -45,7 +52,16 @@ int countPaths(
 }
 
 String solvePart2(InputType input) {
-  return countSpecificPaths('svr', input, {}, {}).toString();
+  var totalCount = 0;
+  totalCount +=
+      countPaths('svr', 'fft', input) *
+      countPaths('fft', 'dac', input) *
+      countPaths('dac', 'out', input);
+  totalCount +=
+      countPaths('svr', 'dac', input) *
+      countPaths('dac', 'fft', input) *
+      countPaths('fft', 'out', input);
+  return totalCount.toString();
 }
 
 int countSpecificPaths(
