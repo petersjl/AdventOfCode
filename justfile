@@ -20,3 +20,7 @@ test year day:
 compile year day:
     mkdir -p ./{{year}}/exe
     dart compile exe {{year}}/bin/Day{{day}}.dart -o {{year}}/exe/Day{{day}}.exe
+
+install:
+    sudo apt install -y z3
+    dart pub get --no-example
