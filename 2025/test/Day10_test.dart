@@ -33,7 +33,7 @@ void main() {
   for (var (input, presses) in [
     ("[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}", 2),
   ])
-    test('$input => $presses', () {
+    test('buttons $input => $presses', () {
       final machine = parseInput(input)[0];
       expect(getMinPresses(machine), equals(presses));
     });
@@ -41,7 +41,7 @@ void main() {
   for (var (input, presses) in [
     ("[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}", 10),
   ])
-    test('$input => $presses', () {
+    test('jolts $input => $presses', () {
       final machine = parseInput(input)[0];
       expect(getMinJoltPresses(machine), equals(presses));
     });
