@@ -74,78 +74,83 @@ int getMinPresses(Machine machine) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  var total = 0;
+  for (final machine in input) {
+    final presses = getMinJoltPresses(machine);
+    total += presses;
+  }
+  return total.toString();
 }
 
 int getMinJoltPresses(Machine machine) {
-  final empty = List.generate(machine.joltages.length, (i) => 0);
-  return getJoltPresses(machine.buttons, empty, machine.joltages, {});
-  final q = Queue<(int, List<int>, List<int>)>()
-    ..push((
-      0,
-      List.generate(machine.joltages.length, (i) => 0),
-      machine.joltages,
-    ));
-  while (!q.isEmpty) {
-    var (presses, jolts, target) = q.pop();
-    for (final button in machine.buttons) {
-      final newJolts = getNewJoltages(button, jolts);
-      var check = compare(newJolts, target);
-      if (check == 0) return presses + 1;
-      if (check == 1) {
-        print('jolts too big');
-        continue;
-      }
-      if (shareParity(newJolts, target)) {
-        final newTargets = getNewTargets(newJolts, target);
-      }
-      q.push((presses + 1, newJolts, target));
-    }
-  }
-  throw Exception('Presses not found');
+  return getJoltPresses(machine.buttons, machine.joltages, {});
 }
 
-int getJoltPresses(
-  List<int> buttons,
-  List<int> current,
-  List<int> target,
-  Map<(int, int), int> memo,
-) {
-  print('$current : $target');
-  final check = compare(current, target);
-  if (check == 0) return 1;
-  if (check == 1) return -1;
-  final key = (hashIntList(current), hashIntList(target));
+const BIG_INT = 1000000;
+
+int getJoltPresses(List<int> buttons, List<int> target, Map<int, int> memo) {
+  // Matched
+  if (target.every((val) => val == 0)) return 0;
+  // Missed
+  if (target.any((val) => val < 0)) return BIG_INT;
+  // Check cache
+  final key = hashIntList(target);
   if (memo.containsKey(key)) return memo[key]!;
-  var lowest = 0x7FFFFFFFFFFFFFF; // MAX_INT
-  for (final button in buttons) {
-    final newJoltages = getNewJoltages(button, current);
-    if (shareParity(newJoltages, target)) {
-      final newTargets = getNewTargets(button, target);
-      var result = getJoltPresses(buttons, newJoltages, newTargets, memo);
-      if (result == -1) continue;
-      result = (result * 2) + 1;
-      lowest = min(result, lowest);
-    } else {
-      var result = getJoltPresses(buttons, newJoltages, target, memo);
-      if (result == -1) continue;
-      lowest = min(result + 1, lowest);
-    }
+
+  // Find next step
+  var lowest = BIG_INT;
+  for (final pressed in getPressesWithParity(buttons, target)) {
+    final addedJolts = pressButtons(pressed, target.length);
+    final newTarget = getNewTargets(addedJolts, target);
+    var presses =
+        pressed.length + (2 * getJoltPresses(buttons, newTarget, memo));
+    lowest = min(lowest, presses);
   }
   memo[key] = lowest;
-  print(lowest);
   return lowest;
 }
 
-int compare(List<int> a, List<int> b) {
-  var allEqual = true;
-  for (int i = 0; i < a.length; i++) {
-    if (a[i] > b[i]) return 1;
-    if (a[i] != b[i]) {
-      allEqual = false;
+List<List<int>> getPressesWithParity(List<int> buttons, List<int> targets) {
+  return _getPressesWithParity(buttons, targets, []);
+}
+
+List<List<int>> _getPressesWithParity(
+  List<int> buttons,
+  List<int> targets,
+  List<int> current,
+) {
+  if (buttons.length == 0) {
+    final jolts = pressButtons(current, targets.length);
+    if (shareParity(jolts, targets)) {
+      return [current];
+    } else {
+      return [];
     }
   }
-  return allEqual ? 0 : -1;
+  final List<List<int>> allPresses = [];
+  allPresses.addAll(
+    _getPressesWithParity(buttons.sublist(1), targets, current),
+  );
+  allPresses.addAll(
+    _getPressesWithParity(
+      buttons.sublist(1),
+      targets,
+      List.from(current)..add(buttons[0]),
+    ),
+  );
+  return allPresses;
+}
+
+List<int> pressButtons(List<int> buttons, int size) {
+  final jolts = List.generate(size, (i) => 0);
+  for (final button in buttons) {
+    var i = 0;
+    while (button >> i != 0) {
+      jolts[i] += (button >> i & 1);
+      i++;
+    }
+  }
+  return jolts;
 }
 
 bool shareParity(List<int> current, List<int> target) {
@@ -157,26 +162,12 @@ bool shareParity(List<int> current, List<int> target) {
   return true;
 }
 
-List<int> getNewTargets(int button, List<int> target) {
-  final newJolts = List<int>.from(target);
-  var i = 0;
-  while (button >> i != 0) {
-    if (button >> i & 1 == 1) {
-      newJolts[i] = (newJolts[i] - 1) ~/ 2;
-    }
-    i++;
+List<int> getNewTargets(List<int> jolts, List<int> target) {
+  final newTargets = List<int>.from(target);
+  for (int i = 0; i < target.length; i++) {
+    newTargets[i] = (target[i] - jolts[i]) ~/ 2;
   }
-  return newJolts;
-}
-
-List<int> getNewJoltages(int button, List<int> jolts) {
-  final newJolts = List<int>.from(jolts);
-  var i = 0;
-  while (button >> i != 0) {
-    newJolts[i] += (button >> i & 1);
-    i++;
-  }
-  return newJolts;
+  return newTargets;
 }
 
 int hashIntList(List<int> list) {
