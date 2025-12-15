@@ -22,5 +22,4 @@ compile year day:
     dart compile exe {{year}}/bin/Day{{day}}.dart -o {{year}}/exe/Day{{day}}.exe
 
 install:
-    sudo apt install -y z3
     dart pub get --no-example
