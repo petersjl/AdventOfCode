@@ -33,7 +33,7 @@ String solvePart1(InputType input, [int pairs = 1000]) {
   var roots = uf.roots;
   var sizes = <int>[];
   for (var i = 0; i < roots.length; i++) {
-    int size = uf.setSize(roots[i]);
+    int size = uf.sizeOf(roots[i]);
     if (size > 1) {
       sizes.add(size);
     }
