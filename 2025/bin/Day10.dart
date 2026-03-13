@@ -1,9 +1,10 @@
 // ignore_for_file: dead_code
 
-import 'dart:collection';
+import 'dart:collection' show HashSet;
 import 'dart:math';
 
 import 'package:utils/DartUtils.dart';
+import 'package:utils/DataStructures.dart';
 
 void main() {
   var rawInput = Utils.readToString("../inputs/Day10.txt");
