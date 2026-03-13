@@ -2,7 +2,7 @@
 
 // import 'package:utils/ComonFunctions.dart';
 import 'package:utils/DartUtils.dart';
-import 'package:utils/Grid.dart';
+import 'package:utils/DataStructures.dart';
 
 void main() {
   var rawInput = Utils.readToString("../inputs/Day04.txt");
