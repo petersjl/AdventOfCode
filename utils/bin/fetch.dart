@@ -20,8 +20,17 @@ Future<void> main(List<String> args) async {
 
   final year = int.tryParse(yearStr);
   final day = int.tryParse(dayStr);
-  if (year == null || day == null || day < 1 || day > 25) {
-    stderr.writeln('Invalid arguments. Year must be an int. day must be 1-25.');
+  if (year == null) {
+    stderr.writeln('Invalid year: "$yearStr". Year must be an integer.');
+    exitCode = 2;
+    return;
+  }
+  if (day == null ||
+      (year > 2024 && (day < 1 || day > 12)) ||
+      (year <= 2024 && (day < 1 || day > 25))) {
+    stderr.writeln(
+      'Invalid day: "$dayStr". Day must be an integer between 1 and ${year > 2024 ? 12 : 25}.',
+    );
     exitCode = 2;
     return;
   }
