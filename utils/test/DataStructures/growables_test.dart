@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:utils/DataStructures/growables.dart';
+import 'package:utils/data_structures/growables.dart';
 
 void main() {
   group('GrowableGrid', () {
