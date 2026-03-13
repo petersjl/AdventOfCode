@@ -1,6 +1,5 @@
 import 'package:test/test.dart';
-import 'package:utils/DataStructures/AxisLine.dart';
-import 'package:utils/DataStructures/RightPolygon.dart';
+import 'package:utils/DataStructures.dart';
 import 'package:utils/DartUtils.dart' show Point;
 
 void main() {

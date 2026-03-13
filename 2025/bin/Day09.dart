@@ -3,7 +3,7 @@
 import 'dart:math';
 
 import 'package:utils/DartUtils.dart';
-import 'package:utils/DataStructures/RightPolygon.dart';
+import 'package:utils/DataStructures.dart';
 
 void main() {
   var rawInput = Utils.readToString("../inputs/Day09.txt");
