@@ -28,7 +28,7 @@ int getPresentArea(String shape) {
   final rows = shape.splitNewLine();
   rows.removeAt(0); // remove header
   return rows.fold<int>(0, (sum, row) {
-    return sum + row.characters.count((c) => c == '#');
+    return sum + row.characters.where((c) => c == '#').length;
   });
 }
 

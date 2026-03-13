@@ -10,9 +10,10 @@ void main() {
 typedef InputType = List<List<int>>;
 
 InputType parseInput(String input) {
-  return input.splitNewLine().listMap(
-    (line) => line.split('').listMap((e) => int.parse(e)),
-  );
+  return input
+      .splitNewLine()
+      .map((line) => line.split('').map((e) => int.parse(e)).toList())
+      .toList();
 }
 
 String solvePart1(InputType input) {

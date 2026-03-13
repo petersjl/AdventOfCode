@@ -140,6 +140,7 @@ extension StringExtras on String {
 }
 
 extension GenericIterableExtras<T> on Iterable<T> {
+  // Use .map().toList()
   List<Out> listMap<Out>(Out fun(T element)) {
     List<Out> list = [];
     for (T e in this) {
@@ -148,6 +149,7 @@ extension GenericIterableExtras<T> on Iterable<T> {
     return list;
   }
 
+  // Use .where().toList()
   List<T> listWhere(bool fun(T element)) {
     List<T> list = [];
     for (T e in this) {
@@ -156,6 +158,7 @@ extension GenericIterableExtras<T> on Iterable<T> {
     return list;
   }
 
+  // Use .where().length
   int count(bool compare(T element)) {
     int count = 0;
     this.forEach((element) {
@@ -169,6 +172,7 @@ extension GenericIterableExtras<T> on Iterable<T> {
     return null;
   }
 
+  // Use .fold
   Out collect<Out>(Out base, Out fun(Out collected, T element)) {
     Out col = base;
     this.forEach((e) => col = fun(col, e));

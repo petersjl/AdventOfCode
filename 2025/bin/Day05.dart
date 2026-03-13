@@ -11,11 +11,11 @@ typedef InputType = (List<Pair<int, int>>, List<int>);
 
 InputType parseInput(String input) {
   var parts = input.splitDoubleNewLine();
-  var ranges = parts[0].splitNewLine().listMap((line) {
-    var nums = line.split('-').listMap((e) => int.parse(e));
+  var ranges = parts[0].splitNewLine().map((line) {
+    var nums = line.split('-').map((e) => int.parse(e)).toList();
     return new Pair(nums[0], nums[1]);
-  });
-  var checks = parts[1].splitNewLine().listMap((e) => int.parse(e));
+  }).toList();
+  var checks = parts[1].splitNewLine().map((e) => int.parse(e)).toList();
   return (ranges, checks);
 }
 

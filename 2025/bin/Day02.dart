@@ -12,10 +12,10 @@ void main() {
 typedef InputType = List<(int, int)>;
 
 InputType parseInput(String input) {
-  return input.split(',').listMap((line) {
+  return input.split(',').map((line) {
     var parts = line.split('-');
     return (int.parse(parts[0]), int.parse(parts[1]));
-  });
+  }).toList();
 }
 
 int getDigitCount(int number) {

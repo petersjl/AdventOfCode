@@ -16,9 +16,10 @@ class Rotation {
 typedef InputType = List<Rotation>;
 
 InputType parseInput(String input) {
-  return input.splitNewLine().listMap(
-    (line) => new Rotation(line[0] == 'R', int.parse(line.substring(1))),
-  );
+  return input
+      .splitNewLine()
+      .map((line) => new Rotation(line[0] == 'R', int.parse(line.substring(1))))
+      .toList();
 }
 
 const int DIAL_SIZE = 100;
