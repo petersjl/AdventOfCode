@@ -1,4 +1,4 @@
-import '../bin/Day07.dart' hide main;
+import '../bin/day07.dart' hide main;
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
@@ -14,7 +14,7 @@ void main() {
       late var input;
       setUp(() {
         input = parseInput(
-          Utils.readToString('../test_inputs/Day$DAY-$file.txt'),
+          Utils.readToString('../test_inputs/day$DAY-$file.txt'),
         );
       });
       test("1", () {
@@ -28,7 +28,7 @@ void main() {
   group("Check actual input passes for part", () {
     late var input;
     setUp(() {
-      input = parseInput(Utils.readToString('../inputs/Day$DAY.txt'));
+      input = parseInput(Utils.readToString('../inputs/day$DAY.txt'));
     });
     const part1Answer = "1635";
     const part2Answer = "58097428661390";

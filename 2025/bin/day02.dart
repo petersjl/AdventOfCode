@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:utils/dart_utils.dart';
 
 void main() {
-  var rawInput = Utils.readToString("../inputs/Day02.txt");
+  var rawInput = Utils.readToString("../inputs/day02.txt");
   Utils.runWithTiming(parseInput, solvePart1, solvePart2, rawInput);
 }
 

@@ -3,7 +3,7 @@
 import 'package:utils/dart_utils.dart';
 
 void main() {
-  var rawInput = Utils.readToString("../inputs/Day11.txt");
+  var rawInput = Utils.readToString("../inputs/day11.txt");
   Utils.runWithTiming(parseInput, solvePart1, solvePart2, rawInput);
 }
 

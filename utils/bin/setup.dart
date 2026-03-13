@@ -15,10 +15,10 @@ void main(List<String> args) async {
     exit(1);
   }
 
-  final binPath = '$dir/bin/Day$day.dart';
-  final testPath = '$dir/test/Day${day}_test.dart';
-  final inputPath = '$dir/inputs/Day$day.txt';
-  final testInputPath = '$dir/test_inputs/Day${day}-A.txt';
+  final binPath = '$dir/bin/day$day.dart';
+  final testPath = '$dir/test/day${day}_test.dart';
+  final inputPath = '$dir/inputs/day$day.txt';
+  final testInputPath = '$dir/test_inputs/day${day}-A.txt';
   final solutionTemplate = 'utils/bin/templates/solution.dart';
   final testTemplate = 'utils/bin/templates/test.dart';
 
@@ -39,7 +39,7 @@ void main(List<String> args) async {
 
   // Copy test template and add import
   final testContent = await File(testTemplate).readAsString();
-  final importLine = "import '../bin/Day$day.dart' hide main;\n";
+  final importLine = "import '../bin/day$day.dart' hide main;\n";
   await File(testPath).writeAsString(importLine + testContent);
   print('Created $testPath');
 

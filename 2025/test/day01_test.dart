@@ -2,7 +2,7 @@ import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
 import 'package:utils/dart_utils.dart';
-import '../bin/Day01.dart' hide main;
+import '../bin/day01.dart' hide main;
 
 void main() {
   for (var (file, p1, p2) in [('A', 3, 6)])
@@ -10,7 +10,7 @@ void main() {
       late var input;
       setUp(() {
         input = parseInput(
-          Utils.readToString('../test_inputs/Day01-$file.txt'),
+          Utils.readToString('../test_inputs/day01-$file.txt'),
         );
       });
       test("1", () {
@@ -67,7 +67,7 @@ void main() {
   group("Check actual input passes for part", () {
     late var input;
     setUp(() {
-      input = parseInput(Utils.readToString('../inputs/Day01.txt'));
+      input = parseInput(Utils.readToString('../inputs/day01.txt'));
     });
     test("1", () {
       expect(solvePart1(input), "995");

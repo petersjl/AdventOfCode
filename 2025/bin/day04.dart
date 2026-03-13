@@ -5,7 +5,7 @@ import 'package:utils/dart_utils.dart';
 import 'package:utils/data_structures.dart';
 
 void main() {
-  var rawInput = Utils.readToString("../inputs/Day04.txt");
+  var rawInput = Utils.readToString("../inputs/day04.txt");
   Utils.runWithTiming(parseInput, solvePart1, solvePart2, rawInput);
 }
 

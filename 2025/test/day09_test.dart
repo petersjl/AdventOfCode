@@ -1,20 +1,20 @@
-import '../bin/Day06.dart' hide main;
+import '../bin/day09.dart' hide main;
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
 import 'package:utils/dart_utils.dart';
 
-const String DAY = '06';
+const String DAY = '09';
 void main() {
   if (DAY.isEmpty) {
     throw Exception("Please set the DAY constant to the day being tested.");
   }
-  for (var (file, p1, p2) in [('A', "4277556", "3263827")])
+  for (var (file, p1, p2) in [('A', "50", "24")])
     group("Check sample input $file passes for part", () {
       late var input;
       setUp(() {
         input = parseInput(
-          Utils.readToString('../test_inputs/Day$DAY-$file.txt'),
+          Utils.readToString('../test_inputs/day$DAY-$file.txt'),
         );
       });
       test("1", () {
@@ -25,30 +25,13 @@ void main() {
       }, skip: p2.isEmpty);
     });
 
-  group('Part 1 cases', () {
-    for (var (inputStr, expected) in [("123 45 6 *", "33210")]) {
-      test('Input: $inputStr', () {
-        var input = parseInput(inputStr.splitWhitespace().join('\n'));
-        expect(solvePart1(input), expected);
-      });
-    }
-  });
-  group('Part 2 cases', () {
-    for (var (inputStr, expected) in [("123 \\n 45 \\n  6 \\n*", "8544")]) {
-      test('Input: $inputStr', () {
-        var input = parseInput(inputStr.replaceAll('\\n', '\n'));
-        expect(solvePart2(input), expected);
-      });
-    }
-  });
-
   group("Check actual input passes for part", () {
     late var input;
     setUp(() {
-      input = parseInput(Utils.readToString('../inputs/Day$DAY.txt'));
+      input = parseInput(Utils.readToString('../inputs/day$DAY.txt'));
     });
-    const part1Answer = "5335495999141";
-    const part2Answer = "10142723156431";
+    const part1Answer = "4738108384";
+    const part2Answer = "1513792010";
     test("1", () {
       expect(solvePart1(input), part1Answer);
     }, skip: part1Answer.isEmpty);
