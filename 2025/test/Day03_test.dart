@@ -2,7 +2,7 @@ import '../bin/Day03.dart' hide main;
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
-import 'package:utils/DartUtils.dart';
+import 'package:utils/dart_utils.dart';
 
 const String DAY = '03';
 void main() {

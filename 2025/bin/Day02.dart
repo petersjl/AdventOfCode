@@ -2,7 +2,7 @@
 
 import 'dart:math';
 
-import 'package:utils/DartUtils.dart';
+import 'package:utils/dart_utils.dart';
 
 void main() {
   var rawInput = Utils.readToString("../inputs/Day02.txt");

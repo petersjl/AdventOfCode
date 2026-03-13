@@ -1,7 +1,7 @@
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
-import 'package:utils/DartUtils.dart';
+import 'package:utils/dart_utils.dart';
 import '../bin/Day01.dart' hide main;
 
 void main() {

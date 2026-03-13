@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:utils/DartUtils.dart';
+import 'package:utils/dart_utils.dart';
 
 class AxisLine {
   final Point start;

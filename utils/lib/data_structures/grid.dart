@@ -1,4 +1,4 @@
-import 'package:utils/DartUtils.dart';
+import 'package:utils/dart_utils.dart';
 
 class Grid<T> {
   late List<List<T>> _grid;

@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
-import 'package:utils/DartUtils.dart';
-import 'package:utils/DataStructures.dart';
+import 'package:utils/dart_utils.dart';
+import 'package:utils/data_structures.dart';
 
 void main() {
   var grid = Grid.fromArrays([

@@ -3,8 +3,8 @@
 import 'dart:collection' show HashSet;
 import 'dart:math';
 
-import 'package:utils/DartUtils.dart';
-import 'package:utils/DataStructures.dart';
+import 'package:utils/dart_utils.dart';
+import 'package:utils/data_structures.dart';
 
 void main() {
   var rawInput = Utils.readToString("../inputs/Day10.txt");

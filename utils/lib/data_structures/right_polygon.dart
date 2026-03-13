@@ -1,5 +1,5 @@
-import 'package:utils/DartUtils.dart';
-import 'package:utils/DataStructures/AxisLine.dart';
+import 'package:utils/dart_utils.dart';
+import 'package:utils/data_structures/axis_line.dart';
 
 class RightPolygon {
   List<Point> points;

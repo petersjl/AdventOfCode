@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
-import 'package:utils/DataStructures.dart';
-import 'package:utils/DartUtils.dart' show Point;
+import 'package:utils/data_structures.dart';
+import 'package:utils/dart_utils.dart' show Point;
 
 void main() {
   group('AxisLine', () {

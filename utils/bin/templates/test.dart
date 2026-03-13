@@ -1,7 +1,7 @@
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
-import 'package:utils/DartUtils.dart';
+import 'package:utils/dart_utils.dart';
 
 const String DAY = '{day_num}';
 void main() {

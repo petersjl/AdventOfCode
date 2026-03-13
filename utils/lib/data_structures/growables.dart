@@ -1,4 +1,4 @@
-import 'package:utils/DartUtils.dart';
+import 'package:utils/dart_utils.dart';
 
 class GrowableGrid<T> {
   List<List<T>> _grid;

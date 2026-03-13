@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:utils/DataStructures.dart';
+import 'package:utils/data_structures.dart';
 
 void main() {
   group('UnionFindInt', () {

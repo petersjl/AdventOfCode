@@ -1,7 +1,7 @@
 // ignore_for_file: dead_code
 
-import 'package:utils/DartUtils.dart';
-import 'package:utils/DataStructures.dart';
+import 'package:utils/dart_utils.dart';
+import 'package:utils/data_structures.dart';
 
 void main() {
   var rawInput = Utils.readToString("../inputs/Day07.txt");
