@@ -4,6 +4,9 @@ default:
 setup year day:
     dart run ./utils/bin/setup.dart {{year}} {{day}}
 
+fetch-all year:
+    dart run ./utils/bin/fetch.dart {{year}}
+
 fetch year day:
     dart run ./utils/bin/fetch.dart {{year}} {{day}}
 
