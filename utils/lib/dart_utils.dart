@@ -80,7 +80,7 @@ class Utils {
   }
 
   static List<int> ParseIntList(String line, {String separator = " "}) {
-    return line.split(separator).listMap((str) => int.parse(str));
+    return line.split(separator).map((str) => int.parse(str)).toList();
   }
 
   static List<List<String>> getPointMap(

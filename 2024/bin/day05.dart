@@ -58,14 +58,14 @@ class Rule {
 
 InputType parseInput(String input) {
   var parts = input.splitDoubleNewLine();
-  List<Rule> rules = parts[0].splitNewLine().listMap((line) {
+  List<Rule> rules = parts[0].splitNewLine().map((line) {
     var nums = line.split("|");
     var rule = new Rule(nums[0], nums[1]);
     return rule;
-  });
-  List<List<int>> lines = parts[1].splitNewLine().listMap(
-    (line) => line.split(",").listMap((number) => int.parse(number)),
-  );
+  }).toList();
+  List<List<int>> lines = parts[1].splitNewLine().map((line) {
+    return line.split(",").map((number) => int.parse(number)).toList();
+  }).toList();
   return (rules, lines);
 }
 
@@ -77,7 +77,7 @@ int getLineValue(List<int> line, List<Rule> rules) {
 }
 
 List<Rule> getAffectingRules(List<Rule> rules, List<int> line) {
-  return rules.listWhere((rule) => rule.affects(line));
+  return rules.where((rule) => rule.affects(line)).toList();
 }
 
 List<int> fixLine(List<Rule> rules, List<int> line) {

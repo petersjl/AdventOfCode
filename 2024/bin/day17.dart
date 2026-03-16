@@ -24,7 +24,8 @@ InputType parseInput(String input) {
   List<int> instructions = lines[4]
       .splitWhitespace()[1]
       .split(',')
-      .listMap((str) => int.parse(str));
+      .map((str) => int.parse(str))
+      .toList();
   return (a, b, c, instructions);
 }
 

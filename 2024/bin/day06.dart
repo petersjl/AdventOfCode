@@ -73,7 +73,7 @@ String solvePart1(InputType input) {
   Set<Pair<Point, Point>> path = {Pair(guard, dir)};
   doesHeStay(guard, dir, grid, path: path);
   int count = path
-      .collect(Set<Point>(), (run, element) => run..add(element.first))
+      .fold(Set<Point>(), (run, element) => run..add(element.first))
       .length;
   return count.toString();
 }

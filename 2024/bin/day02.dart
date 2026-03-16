@@ -8,9 +8,13 @@ void main() {
 }
 
 List<List<int>> parseInput(String input) {
-  return input.splitNewLine().listMap(
-    (line) => line.splitWhitespace().listMap((number) => int.parse(number)),
-  );
+  return input
+      .splitNewLine()
+      .map(
+        (line) =>
+            line.splitWhitespace().map((number) => int.parse(number)).toList(),
+      )
+      .toList();
 }
 
 bool checkLineSafety(List<int> line) {

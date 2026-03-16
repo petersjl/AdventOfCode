@@ -11,9 +11,10 @@ void main() {
 typedef InputType = (List<List<int>>, List<Point>);
 
 InputType parseInput(String input) {
-  List<List<int>> map = input.splitNewLine().listMap(
-    (line) => line.split('').listMap((str) => int.parse(str)),
-  );
+  List<List<int>> map = input
+      .splitNewLine()
+      .map((line) => line.split('').map((str) => int.parse(str)).toList())
+      .toList();
   List<Point> trailheads = [];
   for (int row = 0; row < map.length; row++) {
     for (int col = 0; col < map[0].length; col++) {

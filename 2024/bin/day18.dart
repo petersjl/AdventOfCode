@@ -11,10 +11,10 @@ void main() {
 typedef InputType = List<Point>;
 
 InputType parseInput(String input) {
-  return input.splitNewLine().listMap((line) {
+  return input.splitNewLine().map((line) {
     var parts = line.split(',');
     return Point(int.parse(parts[0]), int.parse(parts[1]));
-  });
+  }).toList();
 }
 
 class PathNode {

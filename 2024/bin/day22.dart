@@ -10,7 +10,7 @@ void main() {
 typedef InputType = List<int>;
 
 InputType parseInput(String input) {
-  return input.splitNewLine().listMap((line) => int.parse(line));
+  return input.splitNewLine().map((line) => int.parse(line)).toList();
 }
 
 int getNextSecret(int current) {

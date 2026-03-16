@@ -32,21 +32,18 @@ List<String> getAllDoBlocks(String line) {
   if (doSplits[0].length == 0) doSplits.removeAt(0);
   // Split on don't() and take the left part so it's after
   // a do and before a don't
-  return doSplits.listMap((part) => part.split("don't()")[0]);
+  return doSplits.map((part) => part.split("don't()")[0]).toList();
 }
 
 String solvePart1(List<String> input) {
-  int total = input.collect(
-    0,
-    (run, line) => run + getLineMultiplication(line),
-  );
+  int total = input.fold(0, (run, line) => run + getLineMultiplication(line));
   return total.toString();
 }
 
 String solvePart2(List<String> input) {
-  String allInput = input.collect("", (run, line) => run + line);
+  String allInput = input.fold("", (run, line) => run + line);
   List<String> allDoBlocks = getAllDoBlocks(allInput);
-  int total = allDoBlocks.collect(
+  int total = allDoBlocks.fold(
     0,
     (run, line) => run + getLineMultiplication(line),
   );

@@ -15,15 +15,15 @@ class ClawMachine {
 }
 
 InputType parseInput(String input) {
-  return input.splitDoubleNewLine().listMap((group) {
-    var points = group.splitNewLine().listMap((line) {
+  return input.splitDoubleNewLine().map((group) {
+    var points = group.splitNewLine().map((line) {
       var halves = line.split(', ');
       var x = halves[0].substring(halves[0].indexOf('X') + 2);
       var y = halves[1].substring(2);
       return Point(int.parse(x), int.parse(y));
-    });
+    }).toList();
     return ClawMachine(points[0], points[1], points[2]);
-  });
+  }).toList();
 }
 
 (int, int) findButtonsForClaw(ClawMachine m, [int offset = 0]) {

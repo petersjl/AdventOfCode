@@ -11,12 +11,15 @@ typedef InputType = List<(Point, Point)>;
 Point defaultMap = Point(101, 103);
 
 InputType parseInput(String input) {
-  return input.splitNewLine().listMap((line) {
-    var parts = line.split(' ').listMap((part) => part.substring(2).split(','));
+  return input.splitNewLine().map((line) {
+    var parts = line
+        .split(' ')
+        .map((part) => part.substring(2).split(','))
+        .toList();
     var p = Point(int.parse(parts[0][0]), int.parse(parts[0][1]));
     var v = Point(int.parse(parts[1][0]), int.parse(parts[1][1]));
     return (p, v);
-  });
+  }).toList();
 }
 
 void runSecond(List<(Point, Point)> bots, Point map) {

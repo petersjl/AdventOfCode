@@ -74,14 +74,16 @@ InputType parseInput(String input) {
 }
 
 List<Gate> hookUpGates(Map<String, Wire> wires, List<GateTemplate> templates) {
-  return templates.listMap(
-    (template) => Gate(
-      wires[template.input_a]!,
-      wires[template.input_b]!,
-      wires[template.output]!,
-      template.op,
-    ),
-  );
+  return templates
+      .map(
+        (template) => Gate(
+          wires[template.input_a]!,
+          wires[template.input_b]!,
+          wires[template.output]!,
+          template.op,
+        ),
+      )
+      .toList();
 }
 
 void simulateGates(List<Gate> gates) {

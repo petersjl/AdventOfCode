@@ -44,10 +44,15 @@ String solvePart1(InputType input) {
   for (var list in towersMap.values) {
     getNodesForTowerGroup(list, allNodes);
   }
-  int count = allNodes.count(
-    (node) =>
-        0 <= node.x && node.x < mapSize.x && 0 <= node.y && node.y < mapSize.y,
-  );
+  int count = allNodes
+      .where(
+        (node) =>
+            0 <= node.x &&
+            node.x < mapSize.x &&
+            0 <= node.y &&
+            node.y < mapSize.y,
+      )
+      .length;
   return count.toString();
 }
 

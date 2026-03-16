@@ -13,10 +13,10 @@ void main() {
 typedef InputType = List<Pair<int, List<int>>>;
 
 InputType parseInput(String input) {
-  return input.splitNewLine().listMap((line) {
+  return input.splitNewLine().map((line) {
     var parts = line.split(": ");
     return Pair(int.parse(parts[0]), Utils.ParseIntList(parts[1]));
-  });
+  }).toList();
 }
 
 int add(int a, int b) => a + b;

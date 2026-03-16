@@ -107,8 +107,7 @@ Map<int, int> findCheats(List<List<int>> map, PathNode end) {
 }
 
 String solvePart1(InputType input, [int minTimeSave = 100]) {
-  var (intputMap, start, end) = input;
-  var map = Utils.cloneGrid(intputMap);
+  var (map, start, end) = input;
   var dir = getStartDirection(map, start);
   var pathEnd = populatePath(map, start, dir, end);
   var cheatCounts = findCheats(map, pathEnd);
@@ -138,8 +137,7 @@ Map<int, int> findBigCheats(PathNode end) {
 }
 
 String solvePart2(InputType input, [int minTimeSave = 100]) {
-  var (intputMap, start, end) = input;
-  var map = Utils.cloneGrid(intputMap);
+  var (map, start, end) = input;
   var dir = getStartDirection(map, start);
   var pathEnd = populatePath(map, start, dir, end);
   var cheatCounts = findBigCheats(pathEnd);
