@@ -1,6 +1,7 @@
 // ignore_for_file: dead_code
 
 import 'package:utils/dart_utils.dart';
+import 'package:utils/data_structures.dart';
 
 void main() {
   var rawInput = Utils.readToString("../inputs/day01.txt");
@@ -28,20 +29,23 @@ String solvePart1(InputType input) {
 
 String solvePart2(InputType input) {
   Point currentDirection = Point.up;
-  Set<Point> visited = new Set();
   Point location = Point(0, 0);
-  visited.add(location);
+  List<AxisLine> lines = [];
   for (String str in input) {
     currentDirection = str[0] == 'R'
         ? currentDirection.rotateClockwise()
         : currentDirection.rotateCounterClockwise();
     int dist = int.parse(str.substring(1));
-    for (int i = 0; i < dist; i++) {
-      location += currentDirection;
-      if (!visited.add(location)) {
-        return (location.x.abs() + location.y.abs()).toString();
+    var dest = location + (currentDirection * dist);
+    var line = AxisLine(location, dest);
+    for (var prevLine in lines) {
+      var intersection = line.intersect(prevLine);
+      if (intersection != null) {
+        return (intersection.x.abs() + intersection.y.abs()).toString();
       }
     }
+    lines.add(line);
+    location = dest;
   }
-  return (location.x.abs() + location.y.abs()).toString();
+  throw Exception("No location visited twice");
 }
