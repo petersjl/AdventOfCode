@@ -65,6 +65,38 @@ void main() {
       });
     });
 
+    group('intersect', () {
+      test('parallel lines do not intersect', () {
+        final h1 = AxisLine(Point(0, 0), Point(5, 0));
+        final h2 = AxisLine(Point(1, 0), Point(6, 0));
+        final v1 = AxisLine(Point(0, 0), Point(0, 5));
+        final v2 = AxisLine(Point(0, 1), Point(0, 6));
+        expect(h1.intersect(h2), isNull);
+        expect(v1.intersect(v2), isNull);
+      });
+
+      test('returns intersection point for interior crossing', () {
+        final h = AxisLine(Point(0, 2), Point(5, 2));
+        final v = AxisLine(Point(3, 0), Point(3, 4));
+        expect(h.intersect(v), equals(Point(3, 2)));
+        expect(v.intersect(h), equals(Point(3, 2)));
+      });
+
+      test('returns null when perpendicular lines do not cross', () {
+        final h = AxisLine(Point(0, 2), Point(2, 2));
+        final v = AxisLine(Point(3, 0), Point(3, 4));
+        expect(h.intersect(v), isNull);
+        expect(v.intersect(h), isNull);
+      });
+
+      test('returns null when lines only touch at endpoint', () {
+        final h = AxisLine(Point(0, 2), Point(3, 2));
+        final v = AxisLine(Point(3, 0), Point(3, 2));
+        expect(h.intersect(v), isNull);
+        expect(v.intersect(h), isNull);
+      });
+    });
+
     group('contains', () {
       for (final (first, second, expected) in [
         // horizontal

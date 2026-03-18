@@ -20,6 +20,19 @@ class AxisLine {
     }
   }
 
+  Point? intersect(AxisLine other) {
+    if (isHorizontal == other.isHorizontal) {
+      return null;
+    } else if (this.crosses(other)) {
+      if (isHorizontal) {
+        return Point(other.left, start.y);
+      } else {
+        return Point(start.x, other.top);
+      }
+    }
+    return null;
+  }
+
   bool crosses(AxisLine other) {
     if (isHorizontal == other.isHorizontal) {
       return false;
