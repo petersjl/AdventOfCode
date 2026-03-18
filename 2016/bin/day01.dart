@@ -3,7 +3,7 @@
 import 'package:utils/dart_utils.dart';
 
 void main() {
-  var rawInput = Utils.readToString("../inputs/day{day_num}.txt");
+  var rawInput = Utils.readToString("../inputs/day01.txt");
   Utils.runWithTiming(parseInput, solvePart1, solvePart2, rawInput);
 }
 
@@ -27,6 +27,26 @@ String solvePart1(InputType input) {
   return (location.x.abs() + location.y.abs()).toString();
 }
 
+String solvePart2(InputType input) {
+  Point currentDirection = Point.up;
+  Set<Point> visited = new Set();
+  Point location = Point(0, 0);
+  visited.add(location);
+  for (String str in input) {
+    currentDirection = str[0] == 'R'
+        ? currentDirection.rotateClockwise()
+        : currentDirection.rotateCounterClockwise();
+    int dist = int.parse(str.substring(1));
+    for (int i = 0; i < dist; i++) {
+      location += currentDirection;
+      if (!visited.add(location)) {
+        return (location.x.abs() + location.y.abs()).toString();
+      }
+    }
+  }
+  return (location.x.abs() + location.y.abs()).toString();
+}
+
 void progress(Point point, int distance, Direction direction) {
   switch (direction) {
     case Direction.North:
@@ -44,6 +64,35 @@ void progress(Point point, int distance, Direction direction) {
   }
 }
 
+bool progressVisits(
+  Point point,
+  int distance,
+  Point direction,
+  Set<Point> visited,
+) {
+  var func = () => 1;
+  switch (direction) {
+    case Direction.North:
+      func = () => point.y += 1;
+      break;
+    case Direction.South:
+      func = () => point.y -= 1;
+      break;
+    case Direction.East:
+      func = () => point.x += 1;
+      break;
+    case Direction.West:
+      func = () => point.x -= 1;
+      break;
+  }
+  for (int i = 0; i < distance; i++) {
+    func();
+    print('Visiting $point, seen: $visited');
+    if (!visited.add(point)) return true;
+  }
+  return false;
+}
+
 Direction turn(Direction current, bool isRightTurn) {
   switch (current) {
     case Direction.North:
@@ -55,8 +104,4 @@ Direction turn(Direction current, bool isRightTurn) {
     case Direction.West:
       return isRightTurn ? Direction.North : Direction.South;
   }
-}
-
-String solvePart2(InputType input) {
-  return "";
 }
