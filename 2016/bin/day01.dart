@@ -8,21 +8,25 @@ void main() {
   Utils.runWithTiming(parseInput, solvePart1, solvePart2, rawInput);
 }
 
-typedef InputType = List<String>;
+typedef InputType = List<({bool clockwise, int dist})>;
 
 InputType parseInput(String input) {
-  return input.split(', ');
+  return input
+      .split(', ')
+      .map(
+        (str) => (clockwise: str[0] == 'R', dist: int.parse(str.substring(1))),
+      )
+      .toList();
 }
 
 String solvePart1(InputType input) {
   Point currentDirection = Point.up;
   Point location = Point(0, 0);
-  for (String str in input) {
-    currentDirection = str[0] == 'R'
+  for (var move in input) {
+    currentDirection = move.clockwise
         ? currentDirection.rotateClockwise()
         : currentDirection.rotateCounterClockwise();
-    int dist = int.parse(str.substring(1));
-    location = location + (currentDirection * dist);
+    location = location + (currentDirection * move.dist);
   }
   return (location.x.abs() + location.y.abs()).toString();
 }
@@ -31,12 +35,11 @@ String solvePart2(InputType input) {
   Point currentDirection = Point.up;
   Point location = Point(0, 0);
   List<AxisLine> lines = [];
-  for (String str in input) {
-    currentDirection = str[0] == 'R'
+  for (var move in input) {
+    currentDirection = move.clockwise
         ? currentDirection.rotateClockwise()
         : currentDirection.rotateCounterClockwise();
-    int dist = int.parse(str.substring(1));
-    var dest = location + (currentDirection * dist);
+    var dest = location + (currentDirection * move.dist);
     var line = AxisLine(location, dest);
     for (var prevLine in lines) {
       var intersection = line.intersect(prevLine);
