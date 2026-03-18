@@ -50,8 +50,16 @@ void main(List<String> args) async {
   await testFile.writeAsString(testFileContent);
 
   // Create empty input files
-  await File(inputPath).writeAsString('');
-  print('Created $inputPath');
-  await File(testInputPath).writeAsString('');
-  print('Created $testInputPath');
+  if (!File(inputPath).existsSync()) {
+    await File(inputPath).writeAsString('');
+    print('Created $inputPath');
+  } else {
+    print('File "$inputPath" already exists.');
+  }
+  if (!File(testInputPath).existsSync()) {
+    await File(testInputPath).writeAsString('');
+    print('Created $testInputPath');
+  } else {
+    print('File "$testInputPath" already exists.');
+  }
 }
