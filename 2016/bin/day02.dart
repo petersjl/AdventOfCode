@@ -25,7 +25,13 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  Point num = new Point(2, 0);
+  String code = '';
+  for (String line in input) {
+    num = getCrossButton(num, line);
+    code += getButtonVal(num)!;
+  }
+  return code;
 }
 
 int getButton(int startButton, String instructions) {
@@ -61,4 +67,64 @@ int getButton(int startButton, String instructions) {
       col = 2;
   }
   return row * 3 + col + 1;
+}
+
+Point getCrossButton(Point startButton, String instructions) {
+  int row = startButton.x;
+  int col = startButton.y;
+
+  for (String s in instructions.characters) {
+    int newRow = row;
+    int newCol = col;
+    switch (s) {
+      case 'U':
+        newRow--;
+        break;
+      case 'D':
+        newRow++;
+        break;
+      case 'L':
+        newCol--;
+        break;
+      case 'R':
+        newCol++;
+        break;
+      case '\n':
+        continue;
+      default:
+        print('Invalid character in getButton: $s');
+        continue;
+    }
+    if (getButtonVal(new Point(newRow, newCol)) != null) {
+      row = newRow;
+      col = newCol;
+    }
+  }
+  return new Point(row, col);
+}
+
+String? getButtonVal(Point button) {
+  switch (button.x) {
+    case 0:
+      return button.y == 2 ? '1' : null;
+    case 1:
+      return button.y > 0 && button.y < 4 ? (button.y + 1).toString() : null;
+    case 2:
+      return button.y > -1 && button.y < 5 ? (button.y + 5).toString() : null;
+    case 3:
+      switch (button.y) {
+        case 1:
+          return 'A';
+        case 2:
+          return 'B';
+        case 3:
+          return 'C';
+        default:
+          return null;
+      }
+    case 4:
+      return button.y == 2 ? 'D' : null;
+    default:
+      return null;
+  }
 }
