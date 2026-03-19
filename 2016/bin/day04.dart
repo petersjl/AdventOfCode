@@ -41,8 +41,32 @@ String solvePart1(InputType input) {
   return sum.toString();
 }
 
-String solvePart2(InputType input) {
-  return "";
+String solvePart2(
+  InputType input, [
+  String target = "northpole object storage",
+]) {
+  for (var room in input) {
+    var decryptedName = decryptName(room.name, room.sectorId);
+    if (decryptedName == target) {
+      return room.sectorId.toString();
+    }
+  }
+  throw Exception("No room found");
+}
+
+var aCode = 'a'.codeUnitAt(0);
+String decryptName(List<String> name, int sectorId) {
+  return name
+      .map(
+        (part) => part.characters
+            .map(
+              (char) => String.fromCharCode(
+                (char.codeUnitAt(0) - aCode + sectorId) % 26 + aCode,
+              ),
+            )
+            .join(),
+      )
+      .join(' ');
 }
 
 String calculateCheckSum(List<String> roomCodes) {
