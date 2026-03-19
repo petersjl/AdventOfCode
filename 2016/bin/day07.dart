@@ -36,11 +36,34 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  int count = 0;
+  for (var line in input) {
+    var abas = getAba(line.outside);
+    if (abas.isEmpty) continue;
+    if (abas.any((aba) {
+      var bab = "${aba[1]}${aba[0]}${aba[1]}";
+      return line.inside.any((inside) => inside.contains(bab));
+    })) {
+      count++;
+    }
+  }
+  return count.toString();
 }
 
 bool hasAbba(List<String> parts) {
   return parts.any(
     (part) => part.contains(RegExp(r'([a-z])((?!\1)[a-z])\2\1')),
   );
+}
+
+List<String> getAba(List<String> parts) {
+  List<String> abas = [];
+  for (var part in parts) {
+    for (int i = 0; i < part.length - 2; i++) {
+      if (part[i] == part[i + 2] && part[i] != part[i + 1]) {
+        abas.add(part.substring(i, i + 3));
+      }
+    }
+  }
+  return abas;
 }
