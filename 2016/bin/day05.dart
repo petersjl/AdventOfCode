@@ -14,14 +14,6 @@ InputType parseInput(String input) {
 }
 
 String solvePart1(InputType input) {
-  return generatePassword(input);
-}
-
-String solvePart2(InputType input) {
-  return "";
-}
-
-String generatePassword(String input) {
   String password = '';
   int index = 0;
   for (int i = 0; i < 8; i++) {
@@ -37,6 +29,21 @@ String generatePassword(String input) {
     }
   }
   return password;
+}
+
+String solvePart2(InputType input) {
+  List<String?> password = List.filled(8, null);
+  for (int index = 0; password.contains(null); index++) {
+    var md5 = Utils.generateMd5(input + index.toString());
+    var guess = checkMd5(md5);
+    if (guess != null) {
+      int pos = int.tryParse(guess) ?? -1;
+      if (pos >= 0 && pos < 8 && password[pos] == null) {
+        password[pos] = md5[6];
+      }
+    }
+  }
+  return password.map((e) => e ?? '').join();
 }
 
 String? checkMd5(String guess) {
