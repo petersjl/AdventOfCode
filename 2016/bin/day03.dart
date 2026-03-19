@@ -22,16 +22,23 @@ InputType parseInput(String input) {
 String solvePart1(InputType input) {
   int validCount = 0;
   for (var row in input) {
-    if (checkHorizontalTriangle(row)) validCount++;
+    if (checkTriangle(row)) validCount++;
   }
   return validCount.toString();
 }
 
 String solvePart2(InputType input) {
-  return "";
+  int validCount = 0;
+  for (int i = 0; i < input.length; i += 3) {
+    for (int j = 0; j < 3; j++) {
+      if (checkTriangle([input[i][j], input[i + 1][j], input[i + 2][j]]))
+        validCount++;
+    }
+  }
+  return validCount.toString();
 }
 
-bool checkHorizontalTriangle(List<int> sides) {
+bool checkTriangle(List<int> sides) {
   sides.sort();
   return sides[0] + sides[1] > sides[2];
 }
