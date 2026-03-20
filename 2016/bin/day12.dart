@@ -34,7 +34,9 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  final registers = {'a': 0, 'b': 0, 'c': 1, 'd': 0};
+  runProgram(input, registers);
+  return registers['a'].toString();
 }
 
 void runProgram(List<Instruction> instructions, Map<String, int> registers) {
