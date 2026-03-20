@@ -34,6 +34,13 @@ class PriorityQueue<T> {
     return _array.removeAt(0);
   }
 
+  bool contains(T value) {
+    for (var item in _array) {
+      if (item == value) return true;
+    }
+    return false;
+  }
+
   void clear() {
     _array.clear();
     _size = 0;

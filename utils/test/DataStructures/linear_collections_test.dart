@@ -30,6 +30,14 @@ void main() {
       expect(queue.length, 0);
       expect(queue.isEmpty, isTrue);
     });
+
+    test("contains returns true when the item is in the queue", () {
+      final queue = PriorityQueue<String>((a, b) => a.compareTo(b));
+
+      queue.enqueueAll(['apple', 'banana', 'cherry']);
+      expect(queue.contains('banana'), isTrue);
+      expect(queue.contains('durian'), isFalse);
+    });
   });
 
   group('Stack', () {
