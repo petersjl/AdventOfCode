@@ -72,7 +72,15 @@ String solvePart1(InputType input, {List<int> targetChips = const [61, 17]}) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  final outputs = [0, 1, 2].map((id) => input.outputs[id]!).toList();
+  while (outputs.any((output) => output.isEmpty)) {
+    for (var bot in input.bots.values) {
+      if (bot.chips.length == 2) {
+        bot.giveAway(input.bots, input.outputs);
+      }
+    }
+  }
+  return (outputs[0][0] * outputs[1][0] * outputs[2][0]).toString();
 }
 
 enum Destination { bot, output }
