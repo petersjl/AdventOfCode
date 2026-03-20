@@ -1,0 +1,27 @@
+rect 4x1
+rotate column x=0 by 1
+rotate column x=1 by 3
+rotate column x=2 by 3
+rotate column x=3 by 5
+rect 4x1
+rotate column x=0 by 1
+rotate column x=1 by 2
+rotate column x=2 by 2
+rect 1x1
+rotate column x=0 by 1
+rect 1x1
+rotate column x=0 by 1
+rect 1x1
+rotate column x=0 by 1
+rect 3x1
+rotate row y=0 by 5
+rotate row y=1 by 5
+rotate row y=2 by 5
+rotate row y=3 by 5
+rotate row y=4 by 5
+rotate row y=5 by 5
+rect 4x1
+rotate column x=1 by 5
+rotate column x=2 by 5
+rotate column x=3 by 5
+rect 1x6
