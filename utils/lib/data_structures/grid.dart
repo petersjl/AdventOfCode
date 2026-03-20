@@ -1,6 +1,7 @@
 import 'package:utils/dart_utils.dart';
+import 'package:utils/data_structures/grid_base.dart';
 
-class Grid<T> {
+class Grid<T> extends GridBase<T> {
   late List<List<T>> _grid;
 
   Grid(T generator(int x, int y), int width, int height) {

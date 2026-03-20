@@ -1,29 +1,34 @@
 import 'package:utils/dart_utils.dart';
+import 'package:utils/data_structures/grid_base.dart' show GridBase;
 
-class GrowableGrid<T> {
+class GrowableGrid<T> extends GridBase<T> {
   List<List<T>> _grid;
   int _xOffset;
   int _yOffset;
-  T _defaultValue;
+  T Function(int x, int y) _defaultGenerator;
 
   int get xLength => _grid[0].length;
   int get yLength => _grid.length;
   int get size => xLength * yLength;
 
   GrowableGrid(
-    this._defaultValue, [
+    T Function(int x, int y) defaultGenerator, [
     int lowX = 0,
     int highX = 0,
     int lowY = 0,
     int highY = 0,
   ]) : _grid = [],
+       _defaultGenerator = defaultGenerator,
        _xOffset = lowX,
        _yOffset = lowY {
     if (lowX > highX || lowY > highY)
       throw RangeError('Lows cannot be larger than highs');
     _grid = List.generate(
       highY - lowY + 1,
-      (index) => List.generate(highX - lowX + 1, ((index) => _defaultValue)),
+      (y) => List.generate(
+        highX - lowX + 1,
+        (x) => _defaultGenerator(x + lowX, y + lowY),
+      ),
     );
   }
 
@@ -36,6 +41,9 @@ class GrowableGrid<T> {
     var actual = checkAndConvert(x, y);
     _grid[actual.y][actual.x] = value;
   }
+
+  int get width => xLength;
+  int get height => yLength;
 
   Point checkAndConvert(int x, int y) {
     var xActual = x - _xOffset;
@@ -62,7 +70,10 @@ class GrowableGrid<T> {
   void _growX(int amount, bool toPositive) {
     for (int i = 0; i < amount; ++i) {
       for (var line in _grid)
-        line.insert(toPositive ? line.length : 0, _defaultValue);
+        line.insert(
+          toPositive ? line.length : 0,
+          _defaultGenerator(toPositive ? line.length : 0, i),
+        );
     }
   }
 
@@ -70,7 +81,10 @@ class GrowableGrid<T> {
     for (int i = 0; i < amount; ++i) {
       _grid.insert(
         toPositive ? _grid.length : 0,
-        List.generate(_grid[0].length, (index) => _defaultValue),
+        List.generate(
+          _grid[0].length,
+          (index) => _defaultGenerator(index, toPositive ? _grid.length : 0),
+        ),
       );
     }
   }
@@ -79,15 +93,22 @@ class GrowableGrid<T> {
 class GrowableList<T> {
   List<T> _list;
   int _offset;
-  T _defaultValue;
+  T Function(int index) _defaultGenerator;
 
   int get length => _list.length;
 
-  GrowableList(this._defaultValue, [int low = 0, int high = 0])
-    : _list = [],
-      _offset = low {
+  GrowableList(
+    T Function(int index) defaultGenerator, [
+    int low = 0,
+    int high = 0,
+  ]) : _list = [],
+       _defaultGenerator = defaultGenerator,
+       _offset = low {
     if (low > high) throw RangeError('Low cannot be greater than high');
-    _list = List.generate(high - low + 1, (index) => _defaultValue);
+    _list = List.generate(
+      high - low + 1,
+      (index) => _defaultGenerator(index + low),
+    );
   }
 
   operator [](int i) => _list[checkAndConvert(i)];
@@ -109,7 +130,10 @@ class GrowableList<T> {
 
   void _grow(int amount, bool toPositive) {
     for (int i = 0; i < amount; ++i) {
-      _list.insert(toPositive ? _list.length : 0, _defaultValue);
+      _list.insert(
+        toPositive ? _list.length : 0,
+        _defaultGenerator(toPositive ? _list.length : 0),
+      );
     }
   }
 

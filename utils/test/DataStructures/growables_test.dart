@@ -4,7 +4,7 @@ import 'package:utils/data_structures/growables.dart';
 void main() {
   group('GrowableGrid', () {
     test('initializes dimensions from bounds and fills defaults', () {
-      final grid = GrowableGrid<int>(0, 0, 1, 0, 1);
+      final grid = GrowableGrid<int>((x, y) => 0, 0, 1, 0, 1);
 
       expect(grid.xLength, 2);
       expect(grid.yLength, 2);
@@ -14,12 +14,18 @@ void main() {
     });
 
     test('throws when low bounds are greater than high bounds', () {
-      expect(() => GrowableGrid<int>(0, 1, 0, 0, 0), throwsRangeError);
-      expect(() => GrowableGrid<int>(0, 0, 0, 2, 1), throwsRangeError);
+      expect(
+        () => GrowableGrid<int>((x, y) => 0, 1, 0, 0, 0),
+        throwsRangeError,
+      );
+      expect(
+        () => GrowableGrid<int>((x, y) => 0, 0, 0, 2, 1),
+        throwsRangeError,
+      );
     });
 
     test('set and get work inside initial bounds', () {
-      final grid = GrowableGrid<String>('.', 0, 1, 0, 1);
+      final grid = GrowableGrid<String>((x, y) => '.', 0, 1, 0, 1);
 
       grid.set(1, 0, 'A');
       grid.set(0, 1, 'B');
@@ -30,7 +36,7 @@ void main() {
     });
 
     test('grows to positive x and y and keeps previous values', () {
-      final grid = GrowableGrid<int>(0);
+      final grid = GrowableGrid<int>((x, y) => 0);
 
       grid.set(0, 0, 7);
       grid.set(2, 2, 9);
@@ -43,7 +49,7 @@ void main() {
     });
 
     test('grows to negative x and keeps previous values', () {
-      final grid = GrowableGrid<String>('.');
+      final grid = GrowableGrid<String>((x, y) => '.');
 
       grid.set(0, 0, 'X');
       grid.set(-2, 0, 'Y');
@@ -58,7 +64,7 @@ void main() {
 
   group('GrowableList', () {
     test('initializes length from bounds and fills defaults', () {
-      final list = GrowableList<int>(0, 2, 4);
+      final list = GrowableList<int>((index) => 0, 2, 4);
 
       expect(list.length, 3);
       expect(list[2], 0);
@@ -67,11 +73,11 @@ void main() {
     });
 
     test('throws when low is greater than high', () {
-      expect(() => GrowableList<int>(0, 3, 2), throwsRangeError);
+      expect(() => GrowableList<int>((index) => 0, 3, 2), throwsRangeError);
     });
 
     test('grows to positive and negative indexes and keeps values', () {
-      final list = GrowableList<String>('-');
+      final list = GrowableList<String>((index) => '-');
 
       list[0] = 'a';
       list[3] = 'b';
@@ -85,7 +91,7 @@ void main() {
     });
 
     test('forEach visits all values in order', () {
-      final list = GrowableList<int>(0, 0, 2);
+      final list = GrowableList<int>((index) => 0, 0, 2);
       list[0] = 1;
       list[1] = 2;
       list[2] = 3;
