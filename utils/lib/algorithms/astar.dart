@@ -3,7 +3,7 @@ import 'package:utils/data_structures/grid_base.dart';
 
 import '../dart_utils.dart' show Point;
 
-int? aStar(
+List<Point>? aStar(
   GridBase<bool> grid,
   Point start,
   Point goal,
@@ -11,6 +11,7 @@ int? aStar(
 ) {
   var visited = <Point>{};
   var pathLength = <Point, int>{start: 0};
+  var previous = <Point, Point?>{start: null};
   var heuristicCache = <Point, int>{start: heuristic(start)};
   var expectedCost = <Point, int>{start: heuristicCache[start]!};
   var queue = PriorityQueue((Point a, Point b) {
@@ -22,7 +23,13 @@ int? aStar(
     var current = queue.dequeue();
 
     if (current == goal) {
-      return pathLength[current];
+      var reversed = <Point>[];
+      Point? step = current;
+      while (step != null) {
+        reversed.add(step);
+        step = previous[step];
+      }
+      return reversed.reversed.toList();
     }
 
     visited.add(current);
@@ -46,6 +53,7 @@ int? aStar(
       }
 
       pathLength[neighbor] = newPathLength;
+      previous[neighbor] = current;
       heuristicCache[neighbor] ??= heuristic(neighbor);
       expectedCost[neighbor] = newPathLength + heuristicCache[neighbor]!;
       queue.enqueue(neighbor);

@@ -24,12 +24,17 @@ void main() {
     (Point(2, 4), null),
   ])
     test("astar from $start should be $expected", () {
-      var result = aStar(
+      var path = aStar(
         grid,
         start,
         Point(2, 2),
         (p) => Utils.ManhattanDist(p, Point(2, 2)),
       );
+      var result = path == null ? null : path.length - 1;
       expect(result, expected);
+      if (path != null) {
+        expect(path.first, start);
+        expect(path.last, Point(2, 2));
+      }
     });
 }
