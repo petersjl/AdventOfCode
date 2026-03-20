@@ -6,6 +6,7 @@ class GrowableGrid<T> extends GridBase<T> {
   int _xOffset;
   int _yOffset;
   T Function(int x, int y) _defaultGenerator;
+  bool _allowNegative;
 
   int get xLength => _grid[0].length;
   int get yLength => _grid.length;
@@ -17,10 +18,16 @@ class GrowableGrid<T> extends GridBase<T> {
     int highX = 0,
     int lowY = 0,
     int highY = 0,
+    bool allowNegative = true,
   ]) : _grid = [],
        _defaultGenerator = defaultGenerator,
        _xOffset = lowX,
-       _yOffset = lowY {
+       _yOffset = lowY,
+       _allowNegative = allowNegative {
+    if (!allowNegative && (lowX < 0 || lowY < 0))
+      throw RangeError(
+        'Negative bounds not allowed when allowNegative is false',
+      );
     if (lowX > highX || lowY > highY)
       throw RangeError('Lows cannot be larger than highs');
     _grid = List.generate(
@@ -33,11 +40,19 @@ class GrowableGrid<T> extends GridBase<T> {
   }
 
   T get(int x, int y) {
+    if (!_allowNegative && (x < 0 || y < 0))
+      throw RangeError(
+        'Negative indexes not allowed when allowNegative is false',
+      );
     var actual = checkAndConvert(x, y);
     return _grid[actual.y][actual.x];
   }
 
   void set(int x, int y, T value) {
+    if (!_allowNegative && (x < 0 || y < 0))
+      throw RangeError(
+        'Negative indexes not allowed when allowNegative is false',
+      );
     var actual = checkAndConvert(x, y);
     _grid[actual.y][actual.x] = value;
   }

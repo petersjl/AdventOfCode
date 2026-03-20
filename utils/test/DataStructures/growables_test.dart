@@ -60,6 +60,44 @@ void main() {
       expect(grid.get(0, 0), 'X');
       expect(grid.get(-1, 0), '.');
     });
+
+    test('allowNegative=false throws when constructor has negative bounds', () {
+      expect(
+        () => GrowableGrid<int>((x, y) => 0, -1, 1, 0, 1, false),
+        throwsRangeError,
+      );
+      expect(
+        () => GrowableGrid<int>((x, y) => 0, 0, 1, -1, 1, false),
+        throwsRangeError,
+      );
+    });
+
+    test('allowNegative=false throws on negative get', () {
+      final grid = GrowableGrid<int>((x, y) => 0, 0, 1, 0, 1, false);
+
+      expect(() => grid.get(-1, 0), throwsRangeError);
+      expect(() => grid.get(0, -1), throwsRangeError);
+      expect(() => grid.get(-1, -1), throwsRangeError);
+    });
+
+    test('allowNegative=false throws on negative set', () {
+      final grid = GrowableGrid<int>((x, y) => 0, 0, 1, 0, 1, false);
+
+      expect(() => grid.set(-1, 0, 5), throwsRangeError);
+      expect(() => grid.set(0, -1, 5), throwsRangeError);
+      expect(() => grid.set(-1, -1, 5), throwsRangeError);
+    });
+
+    test('allowNegative=false allows non-negative access', () {
+      final grid = GrowableGrid<int>((x, y) => 0, 0, 2, 0, 2, false);
+
+      grid.set(0, 0, 1);
+      grid.set(2, 2, 9);
+
+      expect(grid.get(0, 0), 1);
+      expect(grid.get(2, 2), 9);
+      expect(grid.get(1, 1), 0);
+    });
   });
 
   group('GrowableList', () {
