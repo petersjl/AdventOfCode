@@ -3,6 +3,7 @@
 import 'package:utils/algorithms.dart';
 import 'package:utils/dart_utils.dart';
 import 'package:utils/data_structures.dart';
+import 'package:utils/data_structures/grid_base.dart';
 
 void main() {
   var rawInput = Utils.readToString("../inputs/day13.txt");
@@ -37,7 +38,11 @@ String solvePart1(InputType input, [int targetX = 31, int targetY = 39]) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  return flood(
+    GrowableGrid((x, y) => isWall(x, y, input), 0, 1, 0, 1, false),
+    Point(1, 1),
+    50,
+  ).toString();
 }
 
 bool isWall(int x, int y, int input) {
@@ -53,4 +58,37 @@ int intCountOnes(int n) {
     count++;
   }
   return count;
+}
+
+int flood(GridBase<bool> grid, Point start, int maxSteps) {
+  var distance = <Point, int>{};
+  var toVisit = Queue<Point>();
+  toVisit.push(start);
+  distance[start] = 0;
+
+  while (!toVisit.isEmpty) {
+    var current = toVisit.pop();
+    var currentDist = distance[current]!;
+
+    for (var direction in Point.directions) {
+      var neighbor = current + direction;
+      if (distance.containsKey(neighbor)) continue;
+
+      bool isWall;
+      try {
+        isWall = grid.get(neighbor.x, neighbor.y);
+      } catch (e) {
+        continue;
+      }
+
+      if (!isWall) {
+        var neighborDist = currentDist + 1;
+        distance[neighbor] = neighborDist;
+        if (neighborDist <= maxSteps) {
+          toVisit.push(neighbor);
+        }
+      }
+    }
+  }
+  return distance.values.where((d) => d > 0).length;
 }
