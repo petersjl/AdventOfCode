@@ -193,25 +193,33 @@ extension ListExtras on List<List<dynamic>> {
 
 String _toString(element) => element.toString();
 
-extension MapExtras on Map<dynamic, int> {
-  int increment(dynamic key, [int amount = 1]) {
+extension MapExtras<K> on Map<K, int> {
+  int increment(K key, [int amount = 1]) {
     return update(key, (value) => value + amount, ifAbsent: () => amount);
   }
 }
 
-extension GenericMapExtras on Map<dynamic, dynamic> {
-  bool where(bool test(dynamic key, dynamic value)) {
-    for (MapEntry entry in this.entries) {
+extension TypedMapExtras<K, V> on Map<K, V> {
+  bool where(bool test(K key, V value)) {
+    for (MapEntry<K, V> entry in this.entries) {
       if (test(entry.key, entry.value)) return true;
     }
     return false;
   }
 
-  dynamic whereFirst(bool test(dynamic key, dynamic value)) {
-    for (MapEntry entry in this.entries) {
+  V? whereFirst(bool test(K key, V value)) {
+    for (MapEntry<K, V> entry in this.entries) {
       if (test(entry.key, entry.value)) return entry.value;
     }
     return null;
+  }
+
+  V getOrSetDefault(K key, V makeDefault()) {
+    final val = this[key];
+    if (val != null) return val;
+    final defaultValue = makeDefault();
+    this[key] = defaultValue;
+    return defaultValue;
   }
 }
 
