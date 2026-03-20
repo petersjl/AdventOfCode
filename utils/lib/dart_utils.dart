@@ -62,7 +62,7 @@ class Utils {
 
   static String readToString(path, [base_dir = null]) {
     var contents = File(to_abs_path(path)).readAsStringSync();
-    contents = contents.replaceAll('\r\n', '\n');
+    contents = contents.trim().replaceAll('\r\n', '\n');
     if (contents.isNotEmpty) {
       if (contents.endsWith('\n')) {
         contents = contents.substring(0, contents.length - 1);
