@@ -18,7 +18,7 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  return decompressLength(input, recursive: true).toString();
 }
 
 int decompressLength(String line, {bool recursive = false}) {
