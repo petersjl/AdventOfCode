@@ -28,6 +28,9 @@ class Grid<T> {
   int get height => _grid.length;
   int get width => _grid.isEmpty ? 0 : _grid[0].length;
 
+  T get(int x, int y) => _grid[y][x];
+  void set(int x, int y, T value) => _grid[y][x] = value;
+
   Grid<T> clone() {
     var newGrid = Grid<T>((x, y) => _grid[y][x], _grid[0].length, _grid.length);
     return newGrid;
@@ -113,5 +116,37 @@ class Grid<T> {
       }
     }
     return !earlyExit;
+  }
+
+  String print([String Function(T)? cellToStr = null]) {
+    cellToStr = cellToStr ?? (cell) => cell.toString();
+    var buffer = StringBuffer();
+    for (var row in _grid) {
+      for (var cell in row) {
+        buffer.write(cellToStr(cell));
+      }
+      buffer.writeln();
+    }
+    return buffer.toString();
+  }
+
+  // Like print, but only for a portion of the grid
+  // xEnd and yEnd are exclusive, like substring
+  String printPartial(
+    int xStart,
+    int yStart,
+    int xEnd,
+    int yEnd, [
+    String Function(T)? cellToStr = null,
+  ]) {
+    cellToStr = cellToStr ?? (cell) => cell.toString();
+    var buffer = StringBuffer();
+    for (var y = yStart; y < yEnd; y++) {
+      for (var x = xStart; x < xEnd; x++) {
+        buffer.write(cellToStr(_grid[y][x]));
+      }
+      buffer.writeln();
+    }
+    return buffer.toString();
   }
 }
