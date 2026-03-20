@@ -37,6 +37,29 @@ InputType parseInput(String input) {
 }
 
 String solvePart1(InputType input) {
+  var moves = movesToFourthFloor(input);
+  if (moves == null)
+    throw Exception("No valid solutions found");
+  else {
+    return moves.toString();
+  }
+}
+
+String solvePart2(InputType input) {
+  // Add the four new generators
+  input.placeItem(0, 'e', false);
+  input.placeItem(0, 'e', true);
+  input.placeItem(0, 'd', false);
+  input.placeItem(0, 'd', true);
+  var moves = movesToFourthFloor(input);
+  if (moves == null)
+    throw Exception("No valid solutions found");
+  else {
+    return moves.toString();
+  }
+}
+
+int? movesToFourthFloor(Building building) {
   var queue = PriorityQueue<Pair<int, Building>>((queueItem, toInsert) {
     if (queueItem.first == toInsert.first)
       return queueItem.second.score - toInsert.second.score;
@@ -45,9 +68,9 @@ String solvePart1(InputType input) {
   });
   Set seen = Set<String>(); // Keep track of what we have seen
   queue.enqueue(
-    Pair(0, input),
+    Pair(0, building),
   ); // Start with the given building with zero steps
-  seen.add(input.identity()); // Mark that we have seen it
+  seen.add(building.identity()); // Mark that we have seen it
   Pair<int, Building>? found;
   while (queue.length != 0) {
     Pair currentPair = queue.dequeue(); // Pop the best candidate
@@ -69,16 +92,7 @@ String solvePart1(InputType input) {
       }
     }
   }
-  if (found == null)
-    throw Exception("No valid solutions found");
-  else {
-    return found.first
-        .toString(); // Return the number of steps it took to find the solution
-  }
-}
-
-String solvePart2(InputType input) {
-  return "";
+  return found?.first;
 }
 
 class Building {
