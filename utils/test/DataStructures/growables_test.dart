@@ -61,6 +61,25 @@ void main() {
       expect(grid.get(-1, 0), '.');
     });
 
+    test('generated values on positive growth use absolute coordinates', () {
+      final grid = GrowableGrid<int>((x, y) => x * 1000 + y, 0, 0, 0, 0);
+
+      expect(grid.get(0, 0), 0);
+      expect(grid.get(2, 3), 2003);
+      expect(grid.xLength, 3);
+      expect(grid.yLength, 4);
+      expect(grid.get(1, 2), 1002);
+    });
+
+    test('generated values on negative y growth use absolute coordinates', () {
+      final grid = GrowableGrid<int>((x, y) => x * 1000 + y, 0, 1, 0, 1);
+
+      expect(grid.get(1, -2), 998);
+      expect(grid.get(0, -1), -1);
+      expect(grid.get(1, 1), 1001);
+      expect(grid.yLength, 4);
+    });
+
     test('allowNegative=false throws when constructor has negative bounds', () {
       expect(
         () => GrowableGrid<int>((x, y) => 0, -1, 1, 0, 1, false),

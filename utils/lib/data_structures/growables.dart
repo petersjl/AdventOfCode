@@ -73,7 +73,7 @@ class GrowableGrid<T> extends GridBase<T> {
     }
     if (yActual < 0) {
       var increase = yActual * -1;
-      _growX(increase, false);
+      _growY(increase, false);
       _yOffset -= increase;
       yActual = 0;
     } else if (yActual >= _grid.length) {
@@ -84,21 +84,26 @@ class GrowableGrid<T> extends GridBase<T> {
 
   void _growX(int amount, bool toPositive) {
     for (int i = 0; i < amount; ++i) {
-      for (var line in _grid)
+      for (int y = 0; y < _grid.length; y++) {
+        final line = _grid[y];
+        final xCoord = toPositive ? _xOffset + line.length : _xOffset - i - 1;
+        final yCoord = _yOffset + y;
         line.insert(
           toPositive ? line.length : 0,
-          _defaultGenerator(toPositive ? line.length : 0, i),
+          _defaultGenerator(xCoord, yCoord),
         );
+      }
     }
   }
 
   void _growY(int amount, bool toPositive) {
     for (int i = 0; i < amount; ++i) {
+      final yCoord = toPositive ? _yOffset + _grid.length : _yOffset - i - 1;
       _grid.insert(
         toPositive ? _grid.length : 0,
         List.generate(
           _grid[0].length,
-          (index) => _defaultGenerator(index, toPositive ? _grid.length : 0),
+          (index) => _defaultGenerator(_xOffset + index, yCoord),
         ),
       );
     }
