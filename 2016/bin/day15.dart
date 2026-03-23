@@ -33,7 +33,17 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  var maxOrder = input
+      .map((disc) => disc.order)
+      .reduce((a, b) => a > b ? a : b);
+  // Add disc at the end with 11 positions and starting at 0
+  input.add(Disc(maxOrder + 1, 11, 0));
+  for (int i = 0; i < 100000000; i++) {
+    if (input.every((disc) => disc.isAligned(i))) {
+      return i.toString();
+    }
+  }
+  throw Exception("Did not find solution within search limit");
 }
 
 class Disc {
