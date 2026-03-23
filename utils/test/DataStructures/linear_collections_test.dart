@@ -240,4 +240,80 @@ void main() {
       expect(seen, ['a', 'b', 'c']);
     });
   });
+
+  group('LinkedRing', () {
+    test('empty ring throws for index, set, and remove', () {
+      final ring = LinkedRing<int>();
+
+      expect(() => ring[0], throwsRangeError);
+      expect(() => ring[0] = 1, throwsRangeError);
+      expect(() => ring.removeAt(0), throwsRangeError);
+    });
+
+    test('fromList preserves head and supports wrapping indexes', () {
+      final ring = LinkedRing<int>.fromList([10, 20, 30]);
+
+      expect(ring[0], 10);
+      expect(ring[1], 20);
+      expect(ring[2], 30);
+      expect(ring[3], 10);
+      expect(ring[4], 20);
+    });
+
+    test('negative indexes walk backward from head', () {
+      final ring = LinkedRing<int>.fromList([10, 20, 30]);
+
+      expect(ring[-1], 30);
+      expect(ring[-2], 20);
+      expect(ring[-3], 10);
+      expect(ring[-4], 30);
+    });
+
+    test('add keeps existing head and appends before head', () {
+      final ring = LinkedRing<int>.fromList([1, 2]);
+
+      ring.add(3);
+
+      expect(ring[0], 1);
+      expect(ring[1], 2);
+      expect(ring[2], 3);
+    });
+
+    test('removeAt supports wrapped and negative indexes', () {
+      final ring = LinkedRing<int>.fromList([1, 2, 3, 4]);
+
+      expect(ring.removeAt(-1), 4);
+      expect(ring.length, 3);
+      expect(ring.removeAt(3), 1);
+      expect(ring.length, 2);
+      expect(ring[0], 2);
+      expect(ring[1], 3);
+    });
+
+    test('for-in loop repeats past ring length until broken', () {
+      final ring = LinkedRing<int>.fromList([1, 2, 3]);
+      final seen = <int>[];
+
+      for (var item in ring) {
+        seen.add(item);
+        if (seen.length == 8) break;
+      }
+
+      expect(seen, [1, 2, 3, 1, 2, 3, 1, 2]);
+      expect(seen.length, greaterThan(ring.length));
+    });
+
+    test('for-in loop ends when ring is emptied during iteration', () {
+      final ring = LinkedRing<int>.fromList([1, 2, 3]);
+      final seen = <int>[];
+
+      for (var item in ring) {
+        seen.add(item);
+        ring.removeAt(0);
+      }
+
+      expect(seen, [1, 2, 3]);
+      expect(ring.length, 0);
+    });
+  });
 }

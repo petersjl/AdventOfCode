@@ -353,6 +353,143 @@ class _LinkedListIterator<T> implements Iterator<T> {
   }
 }
 
+class LinkedRing<T> extends Iterable<T> {
+  int _length;
+  int get length => _length;
+  Binode<T>? _head;
+
+  LinkedRing() : _length = 0;
+
+  LinkedRing.generate(T generator(int index), int count) : _length = count {
+    Binode<T>? prev;
+    for (int i = 0; i < count; i++) {
+      var node = Binode(generator(i));
+      if (i == 0) {
+        _head = node;
+      } else {
+        prev!.next = node;
+        node.prev = prev;
+      }
+      prev = node;
+    }
+    if (prev != null) {
+      prev.next = _head;
+      _head!.prev = prev;
+    }
+  }
+
+  LinkedRing.fromList(List<T> items) : _length = items.length {
+    Binode<T>? prev;
+    for (int i = 0; i < items.length; i++) {
+      var node = Binode(items[i]);
+      if (i == 0) {
+        _head = node;
+      } else {
+        prev!.next = node;
+        node.prev = prev;
+      }
+      prev = node;
+    }
+    if (prev != null) {
+      prev.next = _head;
+      _head!.prev = prev;
+    }
+  }
+
+  void add(T item) {
+    var node = Binode(item);
+    if (_length == 0) {
+      _head = node;
+      node.next = node;
+      node.prev = node;
+    } else {
+      node.next = _head;
+      node.prev = _head!.prev;
+      _head!.prev!.next = node;
+      _head!.prev = node;
+    }
+    _length++;
+  }
+
+  T removeAt(int index) {
+    if (_length == 0) {
+      throw new RangeError("Ring has length 0");
+    }
+    // If we have one item, null the head and return the value
+    if (_length == 1) {
+      final value = _head!.value;
+      _head = null;
+      _length = 0;
+      return value;
+    }
+    // Normalize into index length to allow negative indexes and indexes larger than length
+    var idx = ((index % _length) + _length) % _length;
+    Binode<T>? current = _head;
+    for (int i = 0; i < idx; i++) {
+      current = current!.next;
+    }
+    // Fill in the gap left by current
+    current!.prev!.next = current.next;
+    current.next!.prev = current.prev;
+    if (current == _head) {
+      _head = current.next;
+    }
+    _length--;
+    return current.value;
+  }
+
+  operator [](int index) {
+    if (_length == 0) {
+      throw new RangeError("Ring has length 0");
+    }
+    var idx = ((index % _length) + _length) % _length;
+    Binode<T>? current = _head;
+    for (int i = 0; i < idx; i++) {
+      current = current!.next;
+    }
+    return current!.value;
+  }
+
+  operator []=(int index, T value) {
+    if (_length == 0) {
+      throw new RangeError("Ring has length 0");
+    }
+    var idx = ((index % _length) + _length) % _length;
+    Binode<T>? current = _head;
+    for (int i = 0; i < idx; i++) {
+      current = current!.next;
+    }
+    current!.value = value;
+  }
+
+  Iterator<T> get iterator => _LinkedRingIterator(this);
+}
+
+class _LinkedRingIterator<T> implements Iterator<T> {
+  LinkedRing<T> _ring;
+  Binode<T>? _currentNode;
+  T? _current;
+
+  _LinkedRingIterator(this._ring) : _currentNode = null, _current = null;
+
+  @override
+  T get current => _current as T;
+
+  @override
+  bool moveNext() {
+    if (_ring._head == null) return false;
+
+    if (_currentNode == null) {
+      _currentNode = _ring._head;
+    } else {
+      _currentNode = _currentNode!.next;
+    }
+
+    _current = _currentNode!.value;
+    return true;
+  }
+}
+
 class Binode<T> {
   T value;
   Binode<T>? prev;
