@@ -14,7 +14,15 @@ InputType parseInput(String input) {
 }
 
 String solvePart1(InputType input, [int rows = 40]) {
-  var currentRow = input;
+  return findSafeCount(input, rows);
+}
+
+String solvePart2(InputType input) {
+  return findSafeCount(input, 400000);
+}
+
+String findSafeCount(List<bool> firstRow, int rows) {
+  var currentRow = firstRow;
   var safeCount = currentRow.where((tile) => !tile).length;
   for (int i = 1; i < rows; i++) {
     var nextRow = List<bool>.generate(currentRow.length, (index) {
@@ -30,8 +38,4 @@ String solvePart1(InputType input, [int rows = 40]) {
     currentRow = nextRow;
   }
   return safeCount.toString();
-}
-
-String solvePart2(InputType input) {
-  return "";
 }
