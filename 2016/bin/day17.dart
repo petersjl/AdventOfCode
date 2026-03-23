@@ -54,5 +54,40 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  Queue<({String path, Point position})> toVisit = Queue();
+  toVisit.push((path: "", position: Point(0, 0)));
+  var longest = 0;
+  while (!toVisit.isEmpty) {
+    var current = toVisit.pop();
+    if (current.position == Point(3, 3)) {
+      longest = current.path.length;
+      continue;
+    }
+    var hash = Utils.generateMd5("$input${current.path}");
+    if (openChars.contains(hash[0]) && current.position.y > 0) {
+      toVisit.push((
+        path: "${current.path}U",
+        position: current.position + Point.up,
+      ));
+    }
+    if (openChars.contains(hash[1]) && current.position.y < 3) {
+      toVisit.push((
+        path: "${current.path}D",
+        position: current.position + Point.down,
+      ));
+    }
+    if (openChars.contains(hash[2]) && current.position.x > 0) {
+      toVisit.push((
+        path: "${current.path}L",
+        position: current.position + Point.left,
+      ));
+    }
+    if (openChars.contains(hash[3]) && current.position.x < 3) {
+      toVisit.push((
+        path: "${current.path}R",
+        position: current.position + Point.right,
+      ));
+    }
+  }
+  return longest.toString();
 }
