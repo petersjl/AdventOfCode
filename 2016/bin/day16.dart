@@ -18,6 +18,14 @@ InputType parseInput(String input) {
 }
 
 String solvePart1(InputType input, [int diskLength = 272]) {
+  return solveChecksum(input, diskLength);
+}
+
+String solvePart2(InputType input) {
+  return solveChecksum(input, 35651584);
+}
+
+String solveChecksum(InputType input, int diskLength) {
   var data = input;
   while (data.length < diskLength) {
     data = generateData(data);
@@ -28,10 +36,6 @@ String solvePart1(InputType input, [int diskLength = 272]) {
     checksum = computeChecksum(checksum);
   }
   return checksum.map((bit) => bit ? '1' : '0').join();
-}
-
-String solvePart2(InputType input) {
-  return "";
 }
 
 List<bool> generateData(List<bool> input) {
