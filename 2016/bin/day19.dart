@@ -26,7 +26,17 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  int count = input;
+  Stack<int> firstHalf = Stack();
+  Queue<int> secondHalf = Queue();
+  for (int i = 1; i < count ~/ 2 + 1; ++i) firstHalf.push(i);
+  for (int i = count ~/ 2 + 1; i <= count; ++i) secondHalf.push(i);
+  while (!secondHalf.isEmpty) {
+    firstHalf.length > secondHalf.length ? firstHalf.pop() : secondHalf.pop();
+    secondHalf.push(firstHalf.popBottom());
+    firstHalf.push(secondHalf.pop());
+  }
+  return firstHalf.pop().toString();
 }
 
 Binode<int> createRing(int size) {
