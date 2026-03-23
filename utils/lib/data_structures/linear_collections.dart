@@ -229,6 +229,130 @@ class Queue<T> {
   }
 }
 
+class LinkedList<T> extends Iterable<T> {
+  int _length;
+  int get length => _length;
+  Binode<T>? _head;
+  Binode<T>? _tail;
+
+  LinkedList() : _length = 0;
+
+  LinkedList.generate(T generator(int index), int count) : _length = count {
+    for (int i = 0; i < count; i++) {
+      var node = Binode(generator(i));
+      if (i == 0) {
+        _head = node;
+        _tail = node;
+      } else {
+        _tail!.next = node;
+        node.prev = _tail;
+        _tail = node;
+      }
+    }
+  }
+
+  LinkedList.fromList(List<T> items) : _length = items.length {
+    for (int i = 0; i < items.length; i++) {
+      var node = Binode(items[i]);
+      if (i == 0) {
+        _head = node;
+        _tail = node;
+      } else {
+        _tail!.next = node;
+        node.prev = _tail;
+        _tail = node;
+      }
+    }
+  }
+
+  void add(T item) {
+    var node = Binode(item);
+    if (_length == 0) {
+      _head = node;
+      _tail = node;
+    } else {
+      _tail!.next = node;
+      node.prev = _tail;
+      _tail = node;
+    }
+    _length++;
+  }
+
+  T removeAt(int index) {
+    if (index < 0 || index >= _length) {
+      throw new RangeError("Index out of range: $index");
+    }
+    Binode<T>? current = _head;
+    for (int i = 0; i < index; i++) {
+      current = current!.next;
+    }
+    // Fill in the gap left by current
+    if (current!.prev != null) {
+      current.prev!.next = current.next;
+    } else {
+      _head = current.next;
+    }
+    if (current.next != null) {
+      current.next!.prev = current.prev;
+    } else {
+      _tail = current.prev;
+    }
+    _length--;
+    return current.value;
+  }
+
+  operator [](int index) {
+    if (index < 0 || index >= _length) {
+      throw new RangeError("Index out of range: $index");
+    }
+    Binode<T>? current = _head;
+    for (int i = 0; i < index; i++) {
+      current = current!.next;
+    }
+    return current!.value;
+  }
+
+  operator []=(int index, T value) {
+    if (index < 0 || index >= _length) {
+      throw new RangeError("Index out of range: $index");
+    }
+    Binode<T>? current = _head;
+    for (int i = 0; i < index; i++) {
+      current = current!.next;
+    }
+    current!.value = value;
+  }
+
+  Iterator<T> get iterator => _LinkedListIterator(this);
+}
+
+class _LinkedListIterator<T> implements Iterator<T> {
+  LinkedList<T> _list;
+  Binode<T>? _currentNode;
+  T? _current;
+
+  _LinkedListIterator(this._list) : _currentNode = null, _current = null;
+
+  @override
+  T get current => _current as T;
+
+  @override
+  bool moveNext() {
+    if (_currentNode == null) {
+      _currentNode = _list._head;
+    } else {
+      _currentNode = _currentNode!.next;
+    }
+    if (_currentNode != null) {
+      _current = _currentNode!.value;
+      return true;
+    } else {
+      _current = null;
+      return false;
+    }
+  }
+}
+
 class Binode<T> {
   T value;
   Binode<T>? prev;

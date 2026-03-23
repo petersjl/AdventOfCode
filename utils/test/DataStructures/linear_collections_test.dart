@@ -1,5 +1,6 @@
 import 'package:test/test.dart';
 import 'package:utils/data_structures.dart';
+import 'package:utils/data_structures/linear_collections.dart';
 
 void main() {
   group('PriorityQueue', () {
@@ -119,6 +120,124 @@ void main() {
 
       expect(() => queue.pop(), throwsRangeError);
       expect(() => queue.popFromBack(), throwsRangeError);
+    });
+  });
+
+  group('LinkedList', () {
+    test('default constructor starts empty', () {
+      final list = LinkedList<int>();
+
+      expect(list.length, 0);
+      expect(() => list[0], throwsRangeError);
+    });
+
+    test('generate constructor creates values in index order', () {
+      final list = LinkedList<int>.generate((i) => i * 10, 4);
+
+      expect(list.length, 4);
+      expect(list[0], 0);
+      expect(list[1], 10);
+      expect(list[2], 20);
+      expect(list[3], 30);
+    });
+
+    test('fromList constructor copies values in order', () {
+      final list = LinkedList<String>.fromList(['a', 'b', 'c']);
+
+      expect(list.length, 3);
+      expect(list[0], 'a');
+      expect(list[1], 'b');
+      expect(list[2], 'c');
+    });
+
+    test('add appends to end', () {
+      final list = LinkedList<int>();
+
+      list.add(1);
+      list.add(2);
+      list.add(3);
+
+      expect(list.length, 3);
+      expect(list[0], 1);
+      expect(list[1], 2);
+      expect(list[2], 3);
+    });
+
+    test('operator []= updates value at index', () {
+      final list = LinkedList<int>.fromList([1, 2, 3]);
+
+      list[1] = 99;
+
+      expect(list[0], 1);
+      expect(list[1], 99);
+      expect(list[2], 3);
+      expect(list.length, 3);
+    });
+
+    test('removeAt removes head and updates order', () {
+      final list = LinkedList<int>.fromList([1, 2, 3]);
+
+      final removed = list.removeAt(0);
+
+      expect(removed, 1);
+      expect(list.length, 2);
+      expect(list[0], 2);
+      expect(list[1], 3);
+    });
+
+    test('removeAt removes middle and keeps links consistent', () {
+      final list = LinkedList<int>.fromList([10, 20, 30, 40]);
+
+      final removed = list.removeAt(2);
+
+      expect(removed, 30);
+      expect(list.length, 3);
+      expect(list[0], 10);
+      expect(list[1], 20);
+      expect(list[2], 40);
+    });
+
+    test('removeAt removes tail', () {
+      final list = LinkedList<int>.fromList([7, 8, 9]);
+
+      final removed = list.removeAt(2);
+
+      expect(removed, 9);
+      expect(list.length, 2);
+      expect(list[0], 7);
+      expect(list[1], 8);
+    });
+
+    test('removeAt on single-item list leaves list empty', () {
+      final list = LinkedList<int>.fromList([42]);
+
+      final removed = list.removeAt(0);
+
+      expect(removed, 42);
+      expect(list.length, 0);
+      expect(() => list[0], throwsRangeError);
+    });
+
+    test('index operations throw on out-of-range indexes', () {
+      final list = LinkedList<int>.fromList([1, 2, 3]);
+
+      expect(() => list[-1], throwsRangeError);
+      expect(() => list[3], throwsRangeError);
+      expect(() => list[-1] = 0, throwsRangeError);
+      expect(() => list[3] = 0, throwsRangeError);
+      expect(() => list.removeAt(-1), throwsRangeError);
+      expect(() => list.removeAt(3), throwsRangeError);
+    });
+
+    test('for-in loop iterates items in order', () {
+      final list = LinkedList<String>.fromList(['a', 'b', 'c']);
+      final seen = <String>[];
+
+      for (var item in list) {
+        seen.add(item);
+      }
+
+      expect(seen, ['a', 'b', 'c']);
     });
   });
 }
