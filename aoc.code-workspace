@@ -1,8 +1,11 @@
 {
-  "folders": [
-    {
-      "name": "AdventOfCode",
-      "path": "."
-    }
-  ]
+	"folders": [
+		{
+			"name": "AdventOfCode",
+			"path": ".",
+		},
+	],
+	"settings": {
+		"cSpell.words": ["Assembunny"],
+	},
 }
