@@ -47,12 +47,17 @@ String solvePart1(InputType input, [String initial = "abcdefgh"]) {
   return password.join();
 }
 
-String solvePart2(InputType input) {
-  return "";
+String solvePart2(InputType input, [String initial = "fbgdceah"]) {
+  final password = initial.split("");
+  for (final command in input.reversed) {
+    command.reverse(password);
+  }
+  return password.join();
 }
 
 abstract class Command {
   void apply(List<String> password);
+  void reverse(List<String> password);
 }
 
 class SwapPosition implements Command {
@@ -66,6 +71,11 @@ class SwapPosition implements Command {
     final temp = password[x];
     password[x] = password[y];
     password[y] = temp;
+  }
+
+  @override
+  void reverse(List<String> password) {
+    apply(password);
   }
 }
 
@@ -85,6 +95,11 @@ class SwapLetter implements Command {
       }
     }
   }
+
+  @override
+  void reverse(List<String> password) {
+    apply(password);
+  }
 }
 
 class RotateCount extends Command {
@@ -94,10 +109,11 @@ class RotateCount extends Command {
   RotateCount(this.left, this.count);
 
   @override
-  void apply(List<String> password) {
+  void apply(List<String> password, [bool reverse = false]) {
+    var effectiveLeft = reverse ? !left : left;
     final effectiveCount = count % password.length;
     List<String> rotated;
-    if (left) {
+    if (effectiveLeft) {
       rotated =
           password.sublist(effectiveCount) +
           password.sublist(0, effectiveCount);
@@ -110,12 +126,32 @@ class RotateCount extends Command {
       password[i] = rotated[i];
     }
   }
+
+  @override
+  void reverse(List<String> password) {
+    apply(password, true);
+  }
 }
 
 class RotateLetter extends Command {
   final String x;
+  final Map<int, Map<int, int>> _reverseMappings = {};
 
   RotateLetter(this.x);
+
+  Map<int, int> _getReverseMapping(int n) {
+    if (!_reverseMappings.containsKey(n)) {
+      final mapping = <int, int>{};
+      for (int i = 0; i < n; i++) {
+        int count = 1 + i;
+        if (i >= 4) count++;
+        int newPos = (i + count) % n;
+        mapping[newPos] = (count % n);
+      }
+      _reverseMappings[n] = mapping;
+    }
+    return _reverseMappings[n]!;
+  }
 
   @override
   void apply(List<String> password) {
@@ -126,6 +162,19 @@ class RotateLetter extends Command {
     List<String> rotated =
         password.sublist(password.length - effectiveCount) +
         password.sublist(0, password.length - effectiveCount);
+    for (int i = 0; i < password.length; i++) {
+      password[i] = rotated[i];
+    }
+  }
+
+  @override
+  void reverse(List<String> password) {
+    final n = password.length;
+    final currentIndex = password.indexOf(x);
+    final effectiveCount = _getReverseMapping(n)[currentIndex]!;
+
+    List<String> rotated =
+        password.sublist(effectiveCount) + password.sublist(0, effectiveCount);
     for (int i = 0; i < password.length; i++) {
       password[i] = rotated[i];
     }
@@ -145,6 +194,11 @@ class ReversePositions extends Command {
       password[i] = sublist[i - x];
     }
   }
+
+  @override
+  void reverse(List<String> password) {
+    apply(password);
+  }
 }
 
 class MovePosition extends Command {
@@ -157,5 +211,11 @@ class MovePosition extends Command {
   void apply(List<String> password) {
     final char = password.removeAt(x);
     password.insert(y, char);
+  }
+
+  @override
+  void reverse(List<String> password) {
+    final char = password.removeAt(y);
+    password.insert(x, char);
   }
 }
