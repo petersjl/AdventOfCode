@@ -34,6 +34,24 @@ String solvePart1(InputType input) {
   return current.toString();
 }
 
-String solvePart2(InputType input) {
-  return "";
+String solvePart2(InputType input, [int max = 4294967295]) {
+  var ranges = input;
+  ranges.sort((a, b) {
+    final cmp = a.x.compareTo(b.x);
+    return cmp != 0 ? cmp : b.y.compareTo(a.y);
+  });
+  int current = 0;
+  int allowed = 0;
+  for (var range in ranges) {
+    if (range.x > current) {
+      allowed += range.x - current;
+      current = range.y + 1;
+    } else if (range.y >= current) {
+      current = range.y + 1;
+    }
+  }
+  if (current <= max) {
+    allowed += max - current + 1;
+  }
+  return allowed.toString();
 }
