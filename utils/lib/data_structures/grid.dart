@@ -1,7 +1,7 @@
 import 'package:utils/dart_utils.dart';
 import 'package:utils/data_structures/grid_base.dart';
 
-class Grid<T> extends GridBase<T> {
+class Grid<T> extends GridBase<T> with Iterable<T> {
   late List<List<T>> _grid;
 
   Grid(T generator(int x, int y), int width, int height) {
@@ -32,12 +32,15 @@ class Grid<T> extends GridBase<T> {
   T get(int x, int y) => _grid[y][x];
   void set(int x, int y, T value) => _grid[y][x] = value;
 
+  @override
+  Iterator<T> get iterator => _grid.expand((row) => row).iterator;
+
   Grid<T> clone() {
     var newGrid = Grid<T>((x, y) => _grid[y][x], _grid[0].length, _grid.length);
     return newGrid;
   }
 
-  void map(T Function(T, Point) fun) {
+  void indexedMap(T Function(T, Point) fun) {
     for (int y = 0; y < _grid.length; y++) {
       for (int x = 0; x < _grid[y].length; x++) {
         _grid[y][x] = fun(_grid[y][x], Point(x, y));

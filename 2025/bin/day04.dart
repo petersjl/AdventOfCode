@@ -35,7 +35,7 @@ String solvePart2(InputType input) {
   var moveable = 0;
   while (moveable != lastMoveable) {
     lastMoveable = moveable;
-    input.map((cell, point) {
+    input.indexedMap((cell, point) {
       if (cell == 0) return cell;
       if (input.surroundingLessThan(point, 4, (val) => val > 0)) {
         moveable++;
