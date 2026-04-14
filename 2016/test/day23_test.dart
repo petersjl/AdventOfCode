@@ -9,7 +9,7 @@ void main() {
   if (DAY.isEmpty) {
     throw Exception("Please set the DAY constant to the day being tested.");
   }
-  for (var (file, p1, p2) in [('A', "3", "")])
+  for (var (file, p1, p2) in [('A', "3", ""), ('B', "", "24")])
     group("Check sample input $file passes for part", () {
       late var input;
       setUp(() {
@@ -17,12 +17,14 @@ void main() {
           Utils.readToString('../test_inputs/day$DAY-$file.txt'),
         );
       });
-      test("1", () {
-        expect(solvePart1(input), p1.toString());
-      }, skip: p1.isEmpty);
-      test("2", () {
-        expect(solvePart2(input), p2.toString());
-      }, skip: p2.isEmpty);
+      if (!p1.isEmpty)
+        test("1", () {
+          expect(solvePart1(input), p1.toString());
+        }, skip: p1.isEmpty);
+      if (!p2.isEmpty)
+        test("2", () {
+          expect(solvePart2(input), p2.toString());
+        }, skip: p2.isEmpty);
     });
 
   group("Check actual input passes for part", () {
@@ -31,7 +33,7 @@ void main() {
       input = parseInput(Utils.readToString('../inputs/day$DAY.txt'));
     });
     const part1Answer = "13468";
-    const part2Answer = "";
+    const part2Answer = "479010028";
     test("1", () {
       expect(solvePart1(input), part1Answer);
     }, skip: part1Answer.isEmpty);
