@@ -1,17 +1,15 @@
-import '../dart_utils.dart' show Point;
-
-({List<Point> path, int totalDistance}) travelingSalesman(
-  Map<Point, Map<Point, int>> distances,
-  Point start, {
+({List<T> path, int totalDistance}) travelingSalesman<T>(
+  Map<T, Map<T, int>> distances,
+  T start, {
   bool returnToStart = false,
 }) {
   var bestDistance = 1 << 62;
-  var bestPath = <Point>[];
+  var bestPath = <T>[];
 
   void visit(
-    Point current,
-    Set<Point> remaining,
-    List<Point> pathSoFar,
+    T current,
+    Set<T> remaining,
+    List<T> pathSoFar,
     int distanceSoFar,
   ) {
     if (remaining.isEmpty) {
