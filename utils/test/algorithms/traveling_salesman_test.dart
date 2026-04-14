@@ -68,4 +68,23 @@ void main() {
     expect(result.path[1], isNot(b));
     expect(result.totalDistance, 8);
   });
+
+  test('uses return leg when choosing shortest cycle', () {
+    final a = Point(0, 0);
+    final b = Point(1, 0);
+    final c = Point(2, 0);
+    final d = Point(3, 0);
+
+    final distances = <Point, Map<Point, int>>{
+      a: {b: 1, c: 2, d: 10},
+      b: {a: 1, c: 1, d: 2},
+      c: {a: 2, b: 1, d: 1},
+      d: {a: 10, b: 2, c: 1},
+    };
+
+    final result = travelingSalesman(distances, a, returnToStart: true);
+
+    expect(result.path, [a, b, d, c, a]);
+    expect(result.totalDistance, 6);
+  });
 }

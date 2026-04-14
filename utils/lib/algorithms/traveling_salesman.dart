@@ -15,9 +15,14 @@ import '../dart_utils.dart' show Point;
     int distanceSoFar,
   ) {
     if (remaining.isEmpty) {
-      if (distanceSoFar < bestDistance) {
-        bestDistance = distanceSoFar;
-        bestPath = [...pathSoFar];
+      final totalDistance = returnToStart && current != start
+          ? distanceSoFar + distances[current]![start]!
+          : distanceSoFar;
+      if (totalDistance < bestDistance) {
+        bestDistance = totalDistance;
+        bestPath = returnToStart && current != start
+            ? [...pathSoFar, start]
+            : [...pathSoFar];
       }
       return;
     }
@@ -35,10 +40,5 @@ import '../dart_utils.dart' show Point;
   }
 
   visit(start, distances.keys.toSet()..remove(start), [start], 0);
-  if (returnToStart && bestPath.isNotEmpty && bestPath.last != start) {
-    final returnDistance = distances[bestPath.last]![start]!;
-    bestDistance += returnDistance;
-    bestPath.add(start);
-  }
   return (path: bestPath, totalDistance: bestDistance);
 }
