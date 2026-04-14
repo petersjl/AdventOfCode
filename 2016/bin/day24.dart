@@ -43,10 +43,13 @@ InputType parseInput(String input) {
 String solvePart1(InputType input) {
   var (start, points, grid) = input;
   var distances = bfsAllPairs(grid, points);
-  var result = travelingSalesman(distances, start, returnToStart: false);
+  var result = travelingSalesman(distances, start);
   return result.totalDistance.toString();
 }
 
 String solvePart2(InputType input) {
-  return "";
+  var (start, points, grid) = input;
+  var distances = bfsAllPairs(grid, points);
+  var result = travelingSalesman(distances, start, returnToStart: true);
+  return result.totalDistance.toString();
 }
