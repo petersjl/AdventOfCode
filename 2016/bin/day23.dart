@@ -22,7 +22,7 @@ String solvePart1(InputType input) {
   final registers = {'a': 7, 'b': 0, 'c': 0, 'd': 0};
   int i = 0;
   while (i < input.length) {
-    i += input[i].run(registers, i);
+    i += tryOptimizeAt(i, input, registers) ?? input[i].run(registers, i);
   }
   return registers['a'].toString();
 }
