@@ -16,28 +16,30 @@ typedef InputType = (Point, Set<Point>, Grid<bool>);
 InputType parseInput(String input) {
   var lines = input.splitNewLine();
   Set<Point> points = {};
-  Grid<bool> grid = Grid((x, y) => false, lines[0].length, lines.length);
   Point? start;
-  for (int i = 0; i < lines.length; i++) {
-    for (int j = 0; j < lines[i].length; j++) {
-      if (lines[i][j] == '#') {
-        grid.set(j, i, true);
+  Grid<bool> grid = Grid(
+    (x, y) {
+      if (lines[y][x] == '#') {
+        return true;
       } else {
-        var num = int.tryParse(lines[i][j]);
+        var num = int.tryParse(lines[y][x]);
         if (num != null) {
-          var point = Point(j, i);
+          var point = Point(x, y);
           points.add(point);
           if (num == 0) {
             start = point;
           }
         }
+        return false;
       }
-    }
-  }
+    },
+    lines[0].length,
+    lines.length,
+  );
   if (start == null) {
     throw Exception("No starting point (0) found in input.");
   }
-  return (start, points, grid);
+  return (start!, points, grid);
 }
 
 String solvePart1(InputType input) {
