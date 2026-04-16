@@ -21,6 +21,8 @@ Instruction parseAssembunnyInstruction(
         );
       }
       return tgl(parts[1], instructions);
+    case 'out':
+      return out(parts[1]);
     default:
       throw Exception("Unknown instruction: ${parts[0]}");
   }
@@ -143,5 +145,16 @@ class tgl extends Instruction {
         throw Exception("Unknown instruction type: ${ins.runtimeType}");
     }
     return 1;
+  }
+}
+
+class out extends Instruction {
+  final String register;
+  out(this.register);
+
+  @override
+  int run(Map<String, int> registers, [int currentIndex = 0]) {
+    // Implement the behavior of the 'out' instruction here
+    return registers[register]!;
   }
 }
