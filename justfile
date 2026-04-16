@@ -24,5 +24,8 @@ compile year day:
     mkdir -p ./{{year}}/exe
     dart compile exe {{year}}/bin/day{{day}}.dart -o {{year}}/exe/day{{day}}.exe
 
+time year:
+    dart run ./utils/bin/benchmark_year.dart {{year}}
+
 install:
     dart pub get --no-example
