@@ -27,5 +27,8 @@ compile year day:
 time year:
     dart run ./utils/bin/benchmark_year.dart {{year}}
 
+timed year day:
+    dart run ./utils/bin/benchmark_day.dart {{year}} {{day}} --write
+
 install:
     dart pub get --no-example

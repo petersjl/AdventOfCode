@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-const _maxRunTime = Duration(seconds: 60);
-
 Future<void> main(List<String> args) async {
   if (args.isEmpty || args.length > 2) {
     stderr.writeln(
@@ -70,95 +68,36 @@ Future<void> main(List<String> args) async {
       'Benchmarking $year day $dd ($runs run${runs == 1 ? '' : 's'})...',
     );
 
-    final exePath = 'exe/day$dd.bench.exe';
-    final compile = await Process.run('dart', [
-      'compile',
-      'exe',
-      'bin/day$dd.dart',
-      '-o',
-      exePath,
-    ], workingDirectory: yearDir.path);
+    final result = await Process.run('dart', [
+      'run',
+      './utils/bin/benchmark_day.dart',
+      year,
+      dd,
+      runs.toString(),
+    ], workingDirectory: yearDir.parent.path);
 
-    if (compile.exitCode != 0) {
+    if (result.exitCode != 0) {
       await writeLine('| $dd❌ | ERR | ERR | ERR | ERR |');
-      stderr.writeln('Compile failed for day $dd.');
-      stderr.writeln((compile.stderr as String).trim());
+      stderr.writeln('Failed to benchmark day $dd.');
+      if (result.stderr.toString().isNotEmpty) {
+        stderr.writeln(result.stderr.toString().trim());
+      }
       continue;
     }
 
-    double parseSumUs = 0;
-    double part1SumUs = 0;
-    double part2SumUs = 0;
-    bool sawPart2 = false;
-    bool failed = false;
-    bool timedOut = false;
+    final row = result.stdout.toString().trim();
+    await writeLine(row);
 
-    for (var runIndex = 0; runIndex < runs; runIndex++) {
-      final run = await _runWithTimeout(
-        './$exePath',
-        const [],
-        workingDirectory: yearDir.path,
-        timeout: _maxRunTime,
-      );
-
-      if (run.timedOut) {
-        timedOut = true;
-        stderr.writeln(
-          'Run ${runIndex + 1}/$runs timed out for day $dd after ${_maxRunTime.inSeconds}s.',
-        );
-        break;
-      }
-
-      if (run.exitCode != 0) {
-        failed = true;
-        stderr.writeln('Run ${runIndex + 1}/$runs failed for day $dd.');
-        stderr.writeln(run.stderr.trim());
-        break;
-      }
-
-      final parsed = _parseTimingOutput(run.stdout);
-      if (parsed == null || parsed.parseUs == null || parsed.part1Us == null) {
-        failed = true;
-        stderr.writeln(
-          'Could not parse timing output for day $dd run ${runIndex + 1}.',
-        );
-        stderr.writeln(run.stdout.trim());
-        break;
-      }
-
-      parseSumUs += parsed.parseUs!;
-      part1SumUs += parsed.part1Us!;
-      if (parsed.part2Us != null) {
-        sawPart2 = true;
-        part2SumUs += parsed.part2Us!;
+    // Extract total time from row to accumulate year total
+    // Row format: | DD[emoji] | parseTime | part1Time | part2Time | totalTime |
+    final parts = row.split('|');
+    if (parts.length >= 6) {
+      final totalStr = parts[5].trim();
+      final totalUs = _parseCompactTime(totalStr);
+      if (totalUs != null) {
+        totalYearUs += totalUs;
       }
     }
-
-    if (timedOut) {
-      await writeLine('| $dd❌ | TIMEOUT | TIMEOUT | TIMEOUT | TIMEOUT |');
-      continue;
-    }
-
-    if (failed) {
-      await writeLine('| $dd❌ | ERR | ERR | ERR | ERR |');
-      continue;
-    }
-
-    final parseAvgUs = parseSumUs / runs;
-    final part1AvgUs = part1SumUs / runs;
-    final double part2AvgUs = sawPart2 ? (part2SumUs / runs) : 0.0;
-    final totalAvgUs = parseAvgUs + part1AvgUs + part2AvgUs;
-
-    final parseStr = _formatUsCompact(parseAvgUs);
-    final part1Str = _formatUsCompact(part1AvgUs);
-    final part2Str = sawPart2 ? _formatUsCompact(part2AvgUs) : '-';
-    final totalStr = _formatUsCompact(totalAvgUs);
-    final dayLabel = '$dd${_dayMarker(totalAvgUs)}';
-    totalYearUs += totalAvgUs;
-
-    await writeLine(
-      '| $dayLabel | $parseStr | $part1Str | $part2Str | $totalStr |',
-    );
   }
 
   // Keep full table in memory for future reuse/serialization by this script.
@@ -234,48 +173,6 @@ int? _extractDay(String fileName) {
   return int.tryParse(match.group(1)!);
 }
 
-class _ParsedTimings {
-  final double? parseUs;
-  final double? part1Us;
-  final double? part2Us;
-
-  const _ParsedTimings({this.parseUs, this.part1Us, this.part2Us});
-}
-
-_ParsedTimings? _parseTimingOutput(String output) {
-  final lines = output
-      .split('\n')
-      .map((line) => line.trim())
-      .where((line) => line.isNotEmpty)
-      .toList();
-
-  double? parseUs;
-  double? part1Us;
-  double? part2Us;
-
-  for (final line in lines) {
-    if (line.startsWith('Parse time: ')) {
-      final value = line.substring('Parse time: '.length).trim();
-      parseUs = _durationToUs(value);
-      continue;
-    }
-
-    final p1 = RegExp(r'^Part 1 \(([^)]+)\):').firstMatch(line);
-    if (p1 != null) {
-      part1Us = _durationToUs(p1.group(1)!);
-      continue;
-    }
-
-    final p2 = RegExp(r'^Part 2 \(([^)]+)\):').firstMatch(line);
-    if (p2 != null) {
-      part2Us = _durationToUs(p2.group(1)!);
-      continue;
-    }
-  }
-
-  return _ParsedTimings(parseUs: parseUs, part1Us: part1Us, part2Us: part2Us);
-}
-
 double? _durationToUs(String s) {
   final normalized = s.replaceAll('µ', 'u').trim();
   final match = RegExp(
@@ -301,16 +198,6 @@ double? _durationToUs(String s) {
     default:
       return null;
   }
-}
-
-String _dayMarker(double totalUs) {
-  if (totalUs < 1000.0) {
-    return '🟢';
-  }
-  if (totalUs < 1000000.0) {
-    return '🟡';
-  }
-  return '🔴';
 }
 
 String _formatUsCompact(double us) {
@@ -346,49 +233,7 @@ String _formatWithSigDigits(double value, int sigDigits) {
   return fixed.replaceFirst(RegExp(r'\.?0+$'), '');
 }
 
-class _RunResult {
-  final int exitCode;
-  final String stdout;
-  final String stderr;
-  final bool timedOut;
-
-  const _RunResult({
-    required this.exitCode,
-    required this.stdout,
-    required this.stderr,
-    required this.timedOut,
-  });
-}
-
-Future<_RunResult> _runWithTimeout(
-  String executable,
-  List<String> arguments, {
-  required String workingDirectory,
-  required Duration timeout,
-}) async {
-  final process = await Process.start(
-    executable,
-    arguments,
-    workingDirectory: workingDirectory,
-  );
-
-  final stdoutFuture = process.stdout.transform(systemEncoding.decoder).join();
-  final stderrFuture = process.stderr.transform(systemEncoding.decoder).join();
-
-  var timedOut = false;
-  late final int exitCode;
-  try {
-    exitCode = await process.exitCode.timeout(timeout);
-  } on TimeoutException {
-    timedOut = true;
-    process.kill(ProcessSignal.sigkill);
-    exitCode = await process.exitCode;
-  }
-
-  return _RunResult(
-    exitCode: exitCode,
-    stdout: await stdoutFuture,
-    stderr: await stderrFuture,
-    timedOut: timedOut,
-  );
+double? _parseCompactTime(String timeStr) {
+  // Convert µ to u for consistency with _durationToUs
+  return _durationToUs(timeStr.replaceAll('µ', 'u'));
 }
