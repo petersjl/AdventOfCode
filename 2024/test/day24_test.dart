@@ -13,10 +13,9 @@ void main() {
           Utils.readToString('../test_inputs/day24-$file.txt'),
         );
       });
-      if (p1 != null)
-        test("1", () {
-          expect(solvePart1(input), p1.toString());
-        });
+      test("1", () {
+        expect(solvePart1(input), p1.toString());
+      });
       if (p2 != null)
         test("2", () {
           expect(solvePart2(input), p2.toString());
