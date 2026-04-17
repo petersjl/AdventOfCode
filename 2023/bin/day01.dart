@@ -22,22 +22,40 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  var count = 0;
+  for (var line in input) {
+    count += findLeftNumber(line, true) * 10 + findRightNumber(line, true);
+  }
+  return count.toString();
 }
 
-int findLeftNumber(String line) {
+int findLeftNumber(String line, [bool allowStr = false]) {
   for (int i = 0; i < line.length; i++) {
     if (numToDigit.containsKey(line[i])) {
       return numToDigit[line[i]]!;
+    }
+    if (allowStr) {
+      for (var str in strToDigit.keys) {
+        if (line.startsWith(str, i)) {
+          return strToDigit[str]!;
+        }
+      }
     }
   }
   throw Exception("No digit found in line: $line");
 }
 
-int findRightNumber(String line) {
+int findRightNumber(String line, [bool allowStr = false]) {
   for (int i = line.length - 1; i >= 0; i--) {
     if (numToDigit.containsKey(line[i])) {
       return numToDigit[line[i]]!;
+    }
+    if (allowStr) {
+      for (var str in strToDigit.keys) {
+        if (line.startsWith(str, i)) {
+          return strToDigit[str]!;
+        }
+      }
     }
   }
   throw Exception("No digit found in line: $line");
