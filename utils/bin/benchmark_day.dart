@@ -39,6 +39,11 @@ Future<void> main(List<String> args) async {
     return;
   }
 
+  final exeDir = Directory('${yearDir.path}/exe');
+  if (!exeDir.existsSync()) {
+    exeDir.createSync(recursive: true);
+  }
+
   final exePath = 'exe/day$dd.bench.exe';
   final compile = await Process.run('dart', [
     'compile',
