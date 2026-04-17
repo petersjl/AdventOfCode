@@ -13,10 +13,21 @@ Future<void> main(List<String> args) async {
   }
 
   final year = args[0].trim();
+  final yearDir = _findYearDir(year);
+  if (yearDir == null) {
+    stderr.writeln('Could not find directory for year "$year".');
+    exitCode = 2;
+    return;
+  }
+
+  final yearNum = int.tryParse(year);
+  final maxDay = yearNum != null && yearNum > 2024 ? 12 : 25;
   final dayStr = args[1].trim();
   final day = int.tryParse(dayStr);
-  if (day == null || day < 1 || day > 25) {
-    stderr.writeln('Invalid day: "$dayStr". Must be 1-25.');
+  if (day == null || day < 1 || day > maxDay) {
+    stderr.writeln(
+      'Invalid day: "$dayStr". Must be an integer between 1 and $maxDay.',
+    );
     exitCode = 2;
     return;
   }
@@ -30,13 +41,6 @@ Future<void> main(List<String> args) async {
       runs = parsed;
       break;
     }
-  }
-
-  final yearDir = _findYearDir(year);
-  if (yearDir == null) {
-    stderr.writeln('Could not find directory for year "$year".');
-    exitCode = 2;
-    return;
   }
 
   final exeDir = Directory('${yearDir.path}/exe');

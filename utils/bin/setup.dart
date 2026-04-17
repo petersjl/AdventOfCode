@@ -7,13 +7,20 @@ void main(List<String> args) async {
   }
 
   final dir = args[0];
-  final day = args[1].padLeft(2, '0');
-
   final directory = Directory(dir);
   if (!directory.existsSync()) {
     print('Directory "$dir" does not exist.');
     exit(1);
   }
+
+  final maxDay = _maxDayForDirectory(dir);
+  final dayStr = args[1].trim();
+  final dayNum = int.tryParse(dayStr);
+  if (dayNum == null || dayNum < 1 || dayNum > maxDay) {
+    print('Invalid day: "$dayStr". Must be an integer between 1 and $maxDay.');
+    exit(1);
+  }
+  final day = dayNum.toString().padLeft(2, '0');
 
   final binPath = '$dir/bin/day$day.dart';
   final testPath = '$dir/test/day${day}_test.dart';
@@ -62,4 +69,14 @@ void main(List<String> args) async {
   } else {
     print('File "$testInputPath" already exists.');
   }
+}
+
+int _maxDayForDirectory(String dir) {
+  final trimmed = dir.trim();
+  final parts = trimmed
+      .split(RegExp(r'[\\/]'))
+      .where((part) => part.isNotEmpty);
+  final lastPart = parts.isEmpty ? trimmed : parts.last;
+  final year = int.tryParse(lastPart);
+  return year != null && year > 2024 ? 12 : 25;
 }
