@@ -4,6 +4,7 @@ environment:
   sdk: ^3.10.0
 workspace:
   - "2016"
+  - "2023"
   - "2024"
   - "2025"
   - utils
