@@ -24,16 +24,20 @@ InputType parseInput(String input) {
       if (char == '.') {
         continue;
       }
-      var number = int.tryParse(char);
-      if (number != null) {
-        var end = line.indexOf(new RegExp(r'[^0-9]'), x);
-        if (end == -1) end = line.length;
-        var strNum = line.substring(x, end);
-        var num = int.parse(strNum);
-        for (int i = x; i < end; i++) {
+      if (char.codeUnitAt(0) >= 48 && char.codeUnitAt(0) <= 57) {
+        // ASCII: '0'=48, '9'=57
+        int num = 0;
+        int start = x;
+        while (x < line.length) {
+          int cu = line[x].codeUnitAt(0);
+          if (cu < 48 || cu > 57) break;
+          num = num * 10 + (cu - 48);
+          x++;
+        }
+        for (int i = start; i < x; i++) {
           grid.set(i, y, num);
         }
-        x += strNum.length - 1;
+        x--;
       } else {
         symbols.add((symbol: char, position: Point(x, y)));
       }
