@@ -57,5 +57,17 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  int total = 0;
+  var grid = input.grid;
+  for (var symbol in input.symbols) {
+    Set<int> values = {};
+    for (var dir in Point.directions) {
+      var pos = symbol.position + dir;
+      values.add(grid.get(pos.x, pos.y));
+    }
+    values.remove(0);
+    if (values.length != 2) continue;
+    total += values.reduce((a, b) => a * b);
+  }
+  return total.toString();
 }
