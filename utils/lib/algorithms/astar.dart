@@ -34,7 +34,7 @@ List<Point>? aStar(
 
     visited.add(current);
 
-    for (var direction in Point.directions) {
+    for (var direction in Point.cardinals) {
       var neighbor = current + direction;
       late bool isWall;
       try {

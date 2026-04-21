@@ -23,7 +23,7 @@ Map<Point, int> bfs(GridBase<bool> grid, Point start, Set<Point> targets) {
       result[current] = distances[current]!;
     }
 
-    for (var direction in Point.directions) {
+    for (var direction in Point.cardinals) {
       var neighbor = current + direction;
       late bool isWall;
       try {

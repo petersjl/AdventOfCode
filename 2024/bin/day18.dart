@@ -38,7 +38,7 @@ Set<Point> aStar(List<List<bool>> grid, Point start, Point end) {
   queueLoop:
   while (!queue.isEmpty) {
     var current = queue.dequeue();
-    for (var dir in Point.directions) {
+    for (var dir in Point.cardinals) {
       var check = current.pos + dir;
       if (check == end) {
         finalPath = PathNode(check, end, 1, current);

@@ -70,7 +70,7 @@ int flood(GridBase<bool> grid, Point start, int maxSteps) {
     var current = toVisit.pop();
     var currentDist = distance[current]!;
 
-    for (var direction in Point.directions) {
+    for (var direction in Point.cardinals) {
       var neighbor = current + direction;
       if (distance.containsKey(neighbor)) continue;
 

@@ -236,7 +236,14 @@ class Point {
   static Point down = Point(0, 1);
   static Point left = Point(-1, 0);
   static Point right = Point(1, 0);
-  static List<Point> directions = [up, down, left, right];
+  static List<Point> cardinals = [up, down, left, right];
+  static List<Point> ordinals = [
+    Point(-1, -1),
+    Point(1, -1),
+    Point(-1, 1),
+    Point(1, 1),
+  ];
+  static List<Point> directions = [...cardinals, ...ordinals];
 
   int x, y;
   Point(this.x, this.y);
@@ -271,16 +278,16 @@ class Point {
   }
 
   bool operator <(Point other) {
-    // Compares based on the magnitued of each point from (0,0)
+    // Compares based on the magnitude of each point from (0,0)
     return x.abs() + y.abs() < other.x.abs() + other.y.abs();
   }
 
   bool operator >(Point other) {
-    // Compares based on the magnitued of each point from (0,0)
+    // Compares based on the magnitude of each point from (0,0)
     return !(this < other);
   }
 
-  // Should only be used on direcitons
+  // Should only be used on directions
   Point rotateClockwise() => Point(-this.y, this.x);
   Point rotateCounterClockwise() => Point(this.y, -this.x);
 

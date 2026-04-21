@@ -41,7 +41,7 @@ class PathNode {
 
 Point getStartDirection(List<List<int>> map, Point start) {
   Point farCorner = Point(map[0].length, map.length);
-  for (var dir in Point.directions) {
+  for (var dir in Point.cardinals) {
     var check = start + dir;
     if (check.isInBounds(farCorner) && map[check.y][check.x] > -1) return dir;
   }
