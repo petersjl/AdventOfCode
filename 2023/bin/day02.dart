@@ -66,5 +66,17 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  var powerSums = 0;
+  for (var game in input) {
+    var minCubes = (red: 0, green: 0, blue: 0);
+    for (var hand in game.hands) {
+      minCubes = (
+        red: max(hand.red, minCubes.red),
+        green: max(hand.green, minCubes.green),
+        blue: max(hand.blue, minCubes.blue),
+      );
+    }
+    powerSums += minCubes.red * minCubes.green * minCubes.blue;
+  }
+  return powerSums.toString();
 }
