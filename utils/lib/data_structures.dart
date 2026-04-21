@@ -6,3 +6,4 @@ export 'data_structures/linear_collections.dart'
 export 'data_structures/right_polygon.dart' show RightPolygon;
 export 'data_structures/union_find.dart' show UnionFind;
 export 'data_structures/union_find_int.dart' show UnionFindInt;
+export 'data_structures/sparse_grid.dart' show SparseGrid;
