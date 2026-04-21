@@ -35,7 +35,15 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  List<int> cardCounts = List.generate(input.length, (num) => 1);
+  for (int i = 0; i < input.length; i++) {
+    var wins = input[i].getWins();
+    if (wins.isEmpty) continue;
+    for (int j = 0; j < wins.length; j++) {
+      cardCounts[i + j + 1] += cardCounts[i];
+    }
+  }
+  return cardCounts.reduce((a, b) => a + b).toString();
 }
 
 class Card {
