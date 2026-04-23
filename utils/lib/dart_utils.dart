@@ -79,7 +79,7 @@ class Utils {
     return (first.x - second.x).abs() + (first.y - second.y).abs();
   }
 
-  static List<int> ParseIntList(String line, {String separator = " "}) {
+  static List<int> ParseIntList(String line, {Pattern separator = " "}) {
     return line.split(separator).map((str) => int.parse(str)).toList();
   }
 
