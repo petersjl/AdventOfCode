@@ -13,6 +13,9 @@ fetch-all year:
 fetch year day:
     dart run ./utils/bin/fetch.dart {{year}} {{day}}
 
+submit year day part:
+    dart run ./utils/bin/submit.dart {{year}} {{day}} {{part}}
+
 runc year day:
     just compile {{year}} {{day}}
     ./{{year}}/exe/day{{day}}.exe
