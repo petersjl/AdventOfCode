@@ -30,40 +30,56 @@ void main(List<String> args) async {
   final solutionTemplate = 'utils/bin/templates/solution.dart';
   final testTemplate = 'utils/bin/templates/test.dart';
 
-  if (File(binPath).existsSync()) {
+  // Copy solution template if it doesn't exist
+  if (!File(binPath).existsSync()) {
+    await File(solutionTemplate).copy(binPath);
+    print('Created $binPath');
+
+    // Replace {day_num} in solution file
+    final binFile = File(binPath);
+    String binContent = await binFile.readAsString();
+    binContent = binContent.replaceAll('{day_num}', day);
+    await binFile.writeAsString(binContent);
+  } else {
     print('File "$binPath" already exists.');
-    exit(0);
   }
 
-  // Copy solution template
-  await File(solutionTemplate).copy(binPath);
-  print('Created $binPath');
+  // Copy test template if it doesn't exist
+  if (!File(testPath).existsSync()) {
+    final testContent = await File(testTemplate).readAsString();
+    final importLine = "import '../bin/day$day.dart' hide main;\n";
+    await File(testPath).writeAsString(importLine + testContent);
+    print('Created $testPath');
 
-  // Replace {day_num} in solution file
-  final binFile = File(binPath);
-  String binContent = await binFile.readAsString();
-  binContent = binContent.replaceAll('{day_num}', day);
-  await binFile.writeAsString(binContent);
+    // Replace {day_num} in test file
+    final testFile = File(testPath);
+    String testFileContent = await testFile.readAsString();
+    testFileContent = testFileContent.replaceAll('{day_num}', day);
+    await testFile.writeAsString(testFileContent);
+  } else {
+    print('File "$testPath" already exists.');
+  }
 
-  // Copy test template and add import
-  final testContent = await File(testTemplate).readAsString();
-  final importLine = "import '../bin/day$day.dart' hide main;\n";
-  await File(testPath).writeAsString(importLine + testContent);
-  print('Created $testPath');
-
-  // Replace {day_num} in test file
-  final testFile = File(testPath);
-  String testFileContent = await testFile.readAsString();
-  testFileContent = testFileContent.replaceAll('{day_num}', day);
-  await testFile.writeAsString(testFileContent);
-
-  // Create empty input files
+  // Fetch input file if it doesn't exist
   if (!File(inputPath).existsSync()) {
-    await File(inputPath).writeAsString('');
-    print('Created $inputPath');
+    final year = _extractYear(dir);
+    if (year != null) {
+      final fetchResult = await Process.run('dart', [
+        'run',
+        'utils:fetch',
+        year.toString(),
+        dayNum.toString(),
+      ]);
+      if (fetchResult.exitCode != 0) {
+        print('Failed to fetch input for day $dayNum');
+      }
+    }
+    print('Fetched input for day $dayNum');
   } else {
     print('File "$inputPath" already exists.');
   }
+
+  // Create empty test input file
   if (!File(testInputPath).existsSync()) {
     await File(testInputPath).writeAsString('');
     print('Created $testInputPath');
