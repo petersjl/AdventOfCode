@@ -192,7 +192,9 @@ Future<void> main(List<String> args) async {
         .replaceAll(RegExp(r'\n{3,}'), '\n\n')
         .trim();
 
-    if (mainContent.contains("That's not the right answer")) {
+    if (mainContent.contains("That's the right answer")) {
+      stdout.writeln('Got the correct answer: $answer');
+    } else {
       stderr.writeln('Wrong answer: "$answer"');
 
       // Save to guesses file
@@ -220,8 +222,6 @@ Future<void> main(List<String> args) async {
 
       stderr.writeln('\n--- AoC Response ---\n$plainText');
       exitCode = 1;
-    } else {
-      stdout.writeln('Got the correct answer: $answer');
     }
   } on HandshakeException catch (e) {
     stderr.writeln('TLS handshake failed: ${e.message}');
