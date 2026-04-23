@@ -39,16 +39,19 @@ String solvePart2(InputType input) {
 class Round implements Comparable<Round> {
   final Hand hand;
   final int bid;
+  int? _handValue;
+  int get handValue =>
+      _handValue ??= hand.getOrderValue() + hand.type.rank * 1000000000000000;
 
   Round(this.hand, this.bid);
 
   @override
   int compareTo(Round other) {
-    return hand.compareTo(other.hand);
+    return handValue.compareTo(other.handValue);
   }
 }
 
-enum HandType implements Comparable<HandType> {
+enum HandType {
   highCard(1),
   onePair(2),
   twoPair(3),
@@ -59,14 +62,9 @@ enum HandType implements Comparable<HandType> {
 
   final int rank;
   const HandType(this.rank);
-
-  @override
-  int compareTo(HandType other) {
-    return rank.compareTo(other.rank);
-  }
 }
 
-class Hand implements Comparable<Hand> {
+class Hand {
   final List<int> cards;
   HandType? _type;
   HandType get type => _type ??= determineHandType();
@@ -89,34 +87,33 @@ class Hand implements Comparable<Hand> {
         }
       }).toList();
 
-  @override
-  int compareTo(Hand other) {
-    final typeCompare = type.compareTo(other.type);
-    if (typeCompare != 0) return typeCompare;
-    // Compare individual card values if hand types are the same
-    for (int i = 0; i < cards.length; i++) {
-      final cardCompare = cards[i].compareTo(other.cards[i]);
-      if (cardCompare != 0) return cardCompare;
+  int getOrderValue() {
+    int val = 0;
+    for (final card in cards) {
+      val = val * 100 + card;
     }
-    return 0;
+    return val;
   }
 
   HandType determineHandType() {
-    var counts = <int, int>{};
-    for (var card in cards) {
-      counts.increment(card);
+    final counts = List<int>.filled(15, 0);
+    for (final card in cards) {
+      counts[card]++;
     }
-    var countValues = counts.values.toList();
-    if (countValues.contains(5)) return HandType.fiveOfAKind;
-    if (countValues.contains(4)) return HandType.fourOfAKind;
-    if (countValues.contains(3) && countValues.contains(2)) {
-      return HandType.fullHouse;
+
+    bool hasThree = false;
+    int pairCount = 0;
+    for (final count in counts) {
+      if (count == 5) return HandType.fiveOfAKind;
+      if (count == 4) return HandType.fourOfAKind;
+      if (count == 3) hasThree = true;
+      if (count == 2) pairCount++;
     }
-    if (countValues.contains(3)) return HandType.threeOfAKind;
-    if (countValues.where((c) => c == 2).length == 2) {
-      return HandType.twoPair;
-    }
-    if (countValues.contains(2)) return HandType.onePair;
+
+    if (hasThree && pairCount == 1) return HandType.fullHouse;
+    if (hasThree) return HandType.threeOfAKind;
+    if (pairCount == 2) return HandType.twoPair;
+    if (pairCount == 1) return HandType.onePair;
     return HandType.highCard;
   }
 
@@ -125,53 +122,73 @@ class Hand implements Comparable<Hand> {
       if (cards[i] == 11) cards[i] = 1; // Treat Joker as lowest card
     }
 
-    var counts = <int, int>{};
-    for (var card in cards) {
-      counts.increment(card);
-    }
-    final jokers = counts.remove(1) ?? 0; // Count of Jokers
-    if (jokers == 5) {
-      this._type = HandType.fiveOfAKind; // All Jokers
-      return;
-    }
-    var countValues = counts.values.toList()..sort((a, b) => b.compareTo(a));
-
-    if (countValues.isEmpty) {
-      this._type = HandType.fiveOfAKind; // Edge case: all jokers
-      return;
-    }
-
-    if (countValues.contains(5 - jokers)) {
-      this._type = HandType.fiveOfAKind;
-      return;
-    }
-    if (countValues.contains(4 - jokers)) {
-      this._type = HandType.fourOfAKind;
-      return;
-    }
-
-    // Full house: need 3 of one kind and 2 of another
-    if (countValues.length >= 2) {
-      int jokersNeededForTriple = max(0, 3 - countValues[0]);
-      int jokersNeededForPair = max(0, 2 - countValues[1]);
-      if (jokersNeededForTriple + jokersNeededForPair <= jokers) {
-        this._type = HandType.fullHouse;
-        return;
+    final counts = List<int>.filled(15, 0);
+    int jokers = 0;
+    for (final card in cards) {
+      if (card == 1) {
+        jokers++;
+      } else {
+        counts[card]++;
       }
     }
 
-    if (countValues.contains(3 - jokers)) {
+    if (jokers == 5) {
+      this._type = HandType.fiveOfAKind;
+      return;
+    }
+
+    int maxCount = 0;
+    for (final count in counts) {
+      if (count > maxCount) maxCount = count;
+    }
+
+    if (maxCount + jokers >= 5) {
+      this._type = HandType.fiveOfAKind;
+      return;
+    }
+    if (maxCount + jokers >= 4) {
+      this._type = HandType.fourOfAKind;
+      return;
+    }
+    if (_canMakeGroups(counts, jokers, 3, 2)) {
+      this._type = HandType.fullHouse;
+      return;
+    }
+    if (maxCount + jokers >= 3) {
       this._type = HandType.threeOfAKind;
       return;
     }
-    if (countValues.where((c) => c == 2 - jokers).length == 2) {
+    if (_canMakeGroups(counts, jokers, 2, 2)) {
       this._type = HandType.twoPair;
       return;
     }
-    if (countValues.contains(2 - jokers)) {
+    if (maxCount + jokers >= 2) {
       this._type = HandType.onePair;
       return;
     }
-    this._type ??= HandType.highCard;
+    this._type = HandType.highCard;
+  }
+
+  bool _canMakeGroups(
+    List<int> counts,
+    int jokers,
+    int firstSize,
+    int secondSize,
+  ) {
+    for (int firstRank = 2; firstRank <= 14; firstRank++) {
+      final jokersForFirst = max(0, firstSize - counts[firstRank]);
+      if (jokersForFirst > jokers) continue;
+
+      for (int secondRank = 2; secondRank <= 14; secondRank++) {
+        if (secondRank == firstRank) continue;
+
+        final jokersForSecond = max(0, secondSize - counts[secondRank]);
+        if (jokersForFirst + jokersForSecond <= jokers) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }
