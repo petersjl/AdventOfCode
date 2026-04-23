@@ -1,5 +1,6 @@
 // ignore_for_file: dead_code
 
+import 'dart:math';
 import 'package:utils/dart_utils.dart';
 
 void main() {
@@ -26,7 +27,13 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  for (final round in input) round.hand.setHandWithJokers();
+  input.sort();
+  int totalBid = 0;
+  for (int i = 0; i < input.length; i++) {
+    totalBid += input[i].bid * (i + 1);
+  }
+  return totalBid.toString();
 }
 
 class Round implements Comparable<Round> {
@@ -111,5 +118,60 @@ class Hand implements Comparable<Hand> {
     }
     if (countValues.contains(2)) return HandType.onePair;
     return HandType.highCard;
+  }
+
+  void setHandWithJokers() {
+    for (int i = 0; i < cards.length; i++) {
+      if (cards[i] == 11) cards[i] = 1; // Treat Joker as lowest card
+    }
+
+    var counts = <int, int>{};
+    for (var card in cards) {
+      counts.increment(card);
+    }
+    final jokers = counts.remove(1) ?? 0; // Count of Jokers
+    if (jokers == 5) {
+      this._type = HandType.fiveOfAKind; // All Jokers
+      return;
+    }
+    var countValues = counts.values.toList()..sort((a, b) => b.compareTo(a));
+
+    if (countValues.isEmpty) {
+      this._type = HandType.fiveOfAKind; // Edge case: all jokers
+      return;
+    }
+
+    if (countValues.contains(5 - jokers)) {
+      this._type = HandType.fiveOfAKind;
+      return;
+    }
+    if (countValues.contains(4 - jokers)) {
+      this._type = HandType.fourOfAKind;
+      return;
+    }
+
+    // Full house: need 3 of one kind and 2 of another
+    if (countValues.length >= 2) {
+      int jokersNeededForTriple = max(0, 3 - countValues[0]);
+      int jokersNeededForPair = max(0, 2 - countValues[1]);
+      if (jokersNeededForTriple + jokersNeededForPair <= jokers) {
+        this._type = HandType.fullHouse;
+        return;
+      }
+    }
+
+    if (countValues.contains(3 - jokers)) {
+      this._type = HandType.threeOfAKind;
+      return;
+    }
+    if (countValues.where((c) => c == 2 - jokers).length == 2) {
+      this._type = HandType.twoPair;
+      return;
+    }
+    if (countValues.contains(2 - jokers)) {
+      this._type = HandType.onePair;
+      return;
+    }
+    this._type ??= HandType.highCard;
   }
 }
