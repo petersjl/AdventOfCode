@@ -1,5 +1,7 @@
 // ignore_for_file: dead_code
 
+import 'dart:math';
+
 import 'package:utils/dart_utils.dart';
 
 void main() {
@@ -43,7 +45,28 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  final mappings = input.mappings;
+  final seeds = input.seeds;
+  final combined = combineMappings(mappings, 'seed');
+  if (!(combined.to == 'location')) {
+    throw Exception(
+      'Expected combined mapping to map to location, but got ${combined.to}',
+    );
+  }
+  var seedIndex = 0;
+  var lowest = combined.targetAtSource(seeds[seedIndex]);
+  while (seedIndex < seeds.length - 1) {
+    var seedStart = seeds[seedIndex];
+    var seedEnd = seedStart + seeds[seedIndex + 1] - 1;
+    lowest = min(lowest, combined.targetAtSource(seedStart));
+    for (var range in combined.ranges) {
+      if (seedStart <= range.source && range.source <= seedEnd) {
+        lowest = min(lowest, range.target);
+      }
+    }
+    seedIndex += 2;
+  }
+  return lowest.toString();
 }
 
 Mapping combineMappings(Map<String, Mapping> mappings, String first) {
