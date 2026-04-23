@@ -34,7 +34,11 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  final times = input.times;
+  final distances = input.distances;
+  final time = int.parse(times.map((ele) => ele.toString()).join());
+  final distance = int.parse(distances.map((ele) => ele.toString()).join());
+  return getWinCount(time, distance).toString();
 }
 
 int getWinCount(int time, int distance) {

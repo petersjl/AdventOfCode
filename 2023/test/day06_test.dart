@@ -21,7 +21,7 @@ void main() {
     }
   });
 
-  for (var (file, p1, p2) in [('A', "288", "")])
+  for (var (file, p1, p2) in [('A', "288", "71503")])
     group("Check sample input $file passes for part", () {
       late var input;
       setUp(() {
@@ -43,7 +43,7 @@ void main() {
       input = parseInput(Utils.readToString('../inputs/day$DAY.txt'));
     });
     const part1Answer = "281600";
-    const part2Answer = "";
+    const part2Answer = "33875953";
     test("1", () {
       expect(solvePart1(input), part1Answer);
     }, skip: part1Answer.isEmpty);
