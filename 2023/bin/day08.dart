@@ -22,21 +22,16 @@ InputType parseInput(String input) {
         throw Exception('Invalid direction character: $char');
     }
   }).toList();
-  final nodes = parts[1]
-      .splitNewLine()
-      .map((line) {
-        final matches = RegExp(r'(\w\w\w)').allMatches(line);
-        if (matches.isEmpty) {
-          throw Exception('Invalid node line: $line');
-        }
-        final name = matches.elementAt(0).group(0)!;
-        final connections = matches.skip(1).map((m) => m.group(0)!).toList();
-        return (name, connections);
-      })
-      .fold(<String, List<String>>{}, (acc, pair) {
-        acc[pair.$1] = pair.$2;
-        return acc;
-      });
+  final nodes = parts[1].splitNewLine().fold(<String, List<String>>{}, (
+    acc,
+    line,
+  ) {
+    final name = line.substring(0, 3);
+    final left = line.substring(7, 10);
+    final right = line.substring(12, 15);
+    acc[name] = [left, right];
+    return acc;
+  });
   return (directions: directions, nodes: nodes);
 }
 
