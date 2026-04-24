@@ -1,5 +1,6 @@
 // ignore_for_file: dead_code
 
+import 'package:utils/algorithms.dart';
 import 'package:utils/dart_utils.dart';
 
 void main() {
@@ -49,7 +50,13 @@ String solvePart1(InputType input) {
 }
 
 String solvePart2(InputType input) {
-  return "";
+  final nodes = input.nodes;
+  final directions = input.directions;
+  final stepsToZ = nodes.keys
+      .where((node) => node[2] == 'A')
+      .map((node) => findStepsTo(nodes, directions, node, (n) => n[2] == 'Z'))
+      .toList();
+  return leastCommonMultiple(stepsToZ).toString();
 }
 
 int findStepsTo(

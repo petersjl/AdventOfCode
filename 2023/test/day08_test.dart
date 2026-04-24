@@ -17,13 +17,20 @@ void main() {
       expect(solvePart1(input), p1.toString(), skip: p1.isEmpty);
     });
 
+  test('Check sample input C passes for part 2', () {
+    final input = parseInput(
+      Utils.readToString('../test_inputs/day$DAY-C.txt'),
+    );
+    expect(solvePart2(input), "6");
+  });
+
   group("Check actual input passes for part", () {
     late var input;
     setUp(() {
       input = parseInput(Utils.readToString('../inputs/day$DAY.txt'));
     });
     const part1Answer = "22357";
-    const part2Answer = "";
+    const part2Answer = "10371555451871";
     test("1", () {
       expect(solvePart1(input), part1Answer);
     }, skip: part1Answer.isEmpty);
