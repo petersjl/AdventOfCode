@@ -3,12 +3,20 @@
 import 'package:utils/algorithms.dart';
 import 'package:utils/dart_utils.dart';
 
+const int _aChar = 65;
+const int _zChar = 90;
+
 void main() {
   var rawInput = Utils.readToString("../inputs/day08.txt");
   Utils.runWithTiming(parseInput, solvePart1, solvePart2, rawInput);
 }
 
-typedef InputType = ({List<int> directions, Map<String, List<String>> nodes});
+typedef InputType = ({
+  List<int> directions,
+  List<int> nodes,
+  List<int> left,
+  List<int> right,
+});
 
 InputType parseInput(String input) {
   final parts = input.splitDoubleNewLine();
@@ -22,52 +30,118 @@ InputType parseInput(String input) {
         throw Exception('Invalid direction character: $char');
     }
   }).toList();
-  final nodes = parts[1].splitNewLine().fold(<String, List<String>>{}, (
-    acc,
-    line,
-  ) {
-    final name = line.substring(0, 3);
-    final left = line.substring(7, 10);
-    final right = line.substring(12, 15);
-    acc[name] = [left, right];
-    return acc;
-  });
-  return (directions: directions, nodes: nodes);
+
+  final rawEdges = <(int from, int left, int right)>[];
+  final indexByCode = <int, int>{};
+  final nodes = <int>[];
+
+  int indexFor(int code) {
+    final existing = indexByCode[code];
+    if (existing != null) return existing;
+    final next = nodes.length;
+    indexByCode[code] = next;
+    nodes.add(code);
+    return next;
+  }
+
+  for (final line in parts[1].splitNewLine()) {
+    final fromCode = charsToCode(line.substring(0, 3));
+    final leftCode = charsToCode(line.substring(7, 10));
+    final rightCode = charsToCode(line.substring(12, 15));
+    final from = indexFor(fromCode);
+    final leftNode = indexFor(leftCode);
+    final rightNode = indexFor(rightCode);
+    rawEdges.add((from, leftNode, rightNode));
+  }
+
+  final nodeCount = nodes.length;
+  final left = List<int>.filled(nodeCount, -1);
+  final right = List<int>.filled(nodeCount, -1);
+
+  for (final edge in rawEdges) {
+    left[edge.$1] = edge.$2;
+    right[edge.$1] = edge.$3;
+  }
+
+  return (directions: directions, nodes: nodes, left: left, right: right);
+}
+
+int charsToCode(String chars) {
+  int code = 0;
+  for (int i = 0; i < chars.length; i++) {
+    code = code * 100 + chars.codeUnitAt(i);
+  }
+  return code;
+}
+
+// Check if a node code ends with a character
+bool endsWithChar(int nodeCode, int charCode) {
+  return nodeCode % 100 == charCode;
 }
 
 String solvePart1(InputType input) {
-  return findStepsTo(
+  return findSteps(
     input.nodes,
+    input.left,
+    input.right,
     input.directions,
-    'AAA',
-    (node) => node == 'ZZZ',
+    input.nodes.indexOf(charsToCode('AAA')),
+    targetCode: charsToCode('ZZZ'),
   ).toString();
 }
 
 String solvePart2(InputType input) {
-  final nodes = input.nodes;
-  final directions = input.directions;
-  final stepsToZ = nodes.keys
-      .where((node) => node[2] == 'A')
-      .map((node) => findStepsTo(nodes, directions, node, (n) => n[2] == 'Z'))
+  final stepsToZ = input.nodes.indexed
+      .where((entry) => endsWithChar(entry.$2, _aChar))
+      .map((entry) {
+        return findSteps(
+          input.nodes,
+          input.left,
+          input.right,
+          input.directions,
+          entry.$1,
+          suffixChar: _zChar,
+        );
+      })
       .toList();
   return leastCommonMultiple(stepsToZ).toString();
 }
 
-int findStepsTo(
-  Map<String, List<String>> nodes,
+int findSteps(
+  List<int> nodes,
+  List<int> left,
+  List<int> right,
   List<int> directions,
-  String start,
-  bool Function(String) isTarget,
-) {
-  String current = start;
-  int steps = 0;
-  final int max = 1 << 30;
-  while (steps < max) {
-    if (isTarget(current)) return steps;
-    final node = nodes[current]!;
-    current = node[directions[steps++ % directions.length]];
+  int startIdx, {
+  int? targetCode,
+  int? suffixChar,
+}) {
+  if ((targetCode == null) == (suffixChar == null)) {
+    throw ArgumentError('Provide exactly one of targetCode or suffixChar.');
   }
 
-  throw Exception('No path found from $start to target');
+  final bool checkSuffix = suffixChar != null;
+  int currentIdx = startIdx;
+  int steps = 0;
+  int directionIndex = 0;
+  final int max = 1 << 30;
+
+  while (steps < max) {
+    final node = nodes[currentIdx];
+    if (checkSuffix) {
+      if (endsWithChar(node, suffixChar)) return steps;
+    } else {
+      if (node == targetCode) return steps;
+    }
+
+    currentIdx = directions[directionIndex] == 0
+        ? left[currentIdx]
+        : right[currentIdx];
+
+    directionIndex++;
+    if (directionIndex == directions.length) directionIndex = 0;
+    steps++;
+  }
+
+  throw Exception('No path found from start to target');
 }
